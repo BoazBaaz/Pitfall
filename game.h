@@ -5,7 +5,6 @@
 #pragma once
 
 namespace Tmpl8 {
-
 	class Game : public TheApp {
 	public:
 		// game flow methods
@@ -19,8 +18,11 @@ namespace Tmpl8 {
 		void MouseWheel(float) { /* implement if you want to handle the mouse wheel */ }
 		void KeyUp(int) { /* implement if you want to handle keys */ }
 		void KeyDown(int) { /* implement if you want to handle keys */ }
+
+		void LoadTilemap(const char* filename, char* tilemap, char* delimiter) {}
 		// data members
 		int2 mousePos;
-		
+		const int tmSize = 14400;
+		char groundTiles1[14400];
 	};
 }
