@@ -6,36 +6,20 @@
 
 #include "precomp.h"
 #include "game.h"
+#include "tmloader.h"
 
-Sprite tileSprite(new Surface("assets/tiles/sheet.png"), 1);
+TMLoader tml;
+
+TMLoader::Tilemap Tilemap1("tiled/tilemap1.csv");
+
+Sprite CharacterSprites(new Surface("assets/character_sheet.png"), 11);
+Sprite Tilesheet(new Surface("assets/pitfall_tilesheet.png"), 3, 8);
 
 void Game::Init() {
 	screen->Clear(0);
-	LoadTilemap("tiled/pitfall_GroundTiles1.csv", groundTiles1, ",");
-	std::cout << groundTiles1 << ", ";
+	tml.LoadTilemap(Tilemap1, ",");
+	tml.DrawTilemap(Tilemap1, Tilesheet, screen, 0, 0);
 }
 
 void Game::Tick(float deltaTime) {
-}
-
-void Game::LoadTilemap(const char* filename, char* tilemap, char* delimiter) {
-	// got help with the the parsing of csv from ChatGPT
-	FILE* file = fopen(filename, "r");
-
-	if (file == nullptr) {
-		return;
-	}
-
-	int tokenCount = 0;
-	char buffer[1024];
-
-	while (fgets(buffer, sizeof(buffer), file)) {
-		char* token = strtok(buffer, delimiter);
-		while (token != NULL) {
-			tilemap[tokenCount++] = *token;
-			token = strtok(NULL, delimiter);
-		}
-	}
-
-	fclose(file);
 }

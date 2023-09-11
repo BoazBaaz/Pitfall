@@ -12,7 +12,8 @@ class Sprite
 {
 public:
 	// structors
-	Sprite( Surface* surface, unsigned int frameCount );
+	Sprite( Surface* surface, unsigned int frameCount);
+	Sprite( Surface* surface, unsigned int frameCountRows, unsigned int frameCountColumns);
 	~Sprite();
 	// methods
 	void Draw( Surface* target, int x, int y );
@@ -24,11 +25,14 @@ public:
 	int GetHeight() { return height; }
 	uint* GetBuffer() { return surface->pixels; }
 	unsigned int Frames() { return numFrames; }
+	unsigned int FrameRows() { return numFrameRows; }
+	unsigned int FrameColumns() { return numFrameColumns; }
 	Surface* GetSurface() { return surface; }
 	void InitializeStartData();
 private:
 	// attributes
 	int width, height;
+	unsigned int numFrameRows, numFrameColumns;
 	unsigned int numFrames;
 	unsigned int currentFrame;
 	unsigned int flags;
