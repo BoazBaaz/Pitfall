@@ -7,7 +7,7 @@ public:
 	// struct
     struct Tilemap {
         Tilemap(const char* filename) : file(filename) {}
-
+        
         const char* file;
         const static int rows = 24, columns = 80;
         int map[rows * columns];
