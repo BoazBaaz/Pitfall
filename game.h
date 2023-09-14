@@ -36,5 +36,7 @@ namespace Tmpl8 {
 			float scrollWheel = 0;
 			int pixel = 0;
 		} m_Mouse;
+
+		TMLoader tml;
 	};
 }

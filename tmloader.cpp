@@ -52,12 +52,9 @@ void TMLoader::LoadTilemap(Tilemap& tilemap, char* delimiter) {
 void TMLoader::DrawTilemap(Tilemap& tilemap, Sprite& tilesheet, Surface* screen, int x, int y) {
 	int tileWidth = tilesheet.GetWidth();
 	int tileHeight = tilesheet.GetHeight();
-	for (int i = 0; i < sizeof(tilemap.map); i++) {
-		if (tilemap.map[i] >= 0 && tilemap.map[i] < tilesheet.Frames()) {
-			int xPos = (i % tilemap.columns) * tileWidth;
-			int yPos = (i / tilemap.columns) * tileHeight;
-			tilesheet.SetFrame(tilemap.map[i]);
-			tilesheet.Draw(screen, x + xPos, y + yPos);
-		}
+	for (int i = 0; i < sizeof(tilemap.map) / sizeof(int); i++) {
+		int xPos = (i % tilemap.columns) * tileWidth;
+		int yPos = (i / tilemap.columns) * tileHeight;
+		tilesheet.Draw(screen, x + xPos, y + yPos, tilemap.map[i]);
 	}
 }

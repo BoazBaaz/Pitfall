@@ -8,13 +8,12 @@
 #include "game.h"
 #include "tmloader.h"
 
-TMLoader tml;
 
 TMLoader::Tilemap Tilemap1("tiled/tilemap1.csv");
+float2 tmPos(0, 0);
 
-Sprite CharacterSprites(new Surface("assets/character_sheet.png"), 1, 11);
-Sprite Tilesheet(new Surface("assets/pitfall_tilesheet.png"), 3, 8);
-float posX = 400;
+Sprite CharacterSprites(new Surface("assets/character_sheet.png"), 11);
+Sprite Tilesheet(new Surface("assets/pitfall_tilesheet.png"), 8, 3);
 
 void Game::Init() {
 	screen->Clear(0);
@@ -24,14 +23,15 @@ void Game::Init() {
 
 void Game::Tick(float deltaTime) {
 	screen->Clear(0);
-	tml.DrawTilemap(Tilemap1, Tilesheet, screen, 0 - posX, 0);
+	tml.DrawTilemap(Tilemap1, Tilesheet, screen, 0 - tmPos.x, 0);
 	if (m_Keyboard.keys[68] == InputState::Down) {
-		posX += 1 * deltaTime;
+		tmPos.x += 1 * deltaTime;
 	}
-	if (m_Keyboard.keys[65] == InputState::Down) {
-		posX -= 1 * deltaTime;
+	else if (m_Keyboard.keys[65] == InputState::Down) {
+		tmPos.x -= 1 * deltaTime;
 	}
-	CharacterSprites.Draw(screen, posX, 300);
+
+	CharacterSprites.DrawScaled(screen, tmPos.x, 500, CharacterSprites.GetWidth(), CharacterSprites.GetHeight());
 
 	UpdateInputState();
 }

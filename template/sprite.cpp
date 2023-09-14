@@ -10,8 +10,9 @@ using namespace Tmpl8;
 Sprite::Sprite(Surface* surface, unsigned int frameCount) :
 	width(surface->width / frameCount),
 	height(surface->height),
-	numFrameRows(1),
-	numFrameColumns(1),
+	frames2D(false),
+	numColumns(0), // This causes an error so I know when it uses the wrong variable 
+	numRows(0),
 	numFrames(frameCount),
 	currentFrame(0),
 	flags(0),
@@ -20,15 +21,16 @@ Sprite::Sprite(Surface* surface, unsigned int frameCount) :
 	InitializeStartData();
 }
 
-Sprite::Sprite(Surface* surface, unsigned int frameCountRows, unsigned int frameCountColumns) :
-	width(surface->width / frameCountColumns),
-	height(surface->height / frameCountRows),
-	numFrameRows(frameCountRows),
-	numFrameColumns(frameCountColumns),
-	numFrames(frameCountRows * frameCountColumns),
+Sprite::Sprite(Surface* surface, unsigned int columns, unsigned int rows) :
+	width(surface->width / columns),
+	height(surface->height / rows),
+	frames2D(true),
+	numColumns(columns),
+	numRows(rows),
+	numFrames(columns* rows),
 	currentFrame(0),
 	flags(0),
-	start(new unsigned int* [frameCountRows * frameCountColumns]),
+	start(new unsigned int* [columns * rows]),
 	surface(surface) {
 	InitializeStartData();
 }
@@ -47,36 +49,62 @@ void Sprite::Draw(Surface* target, int x, int y) {
 	if (y < -height || y >(target->height + height)) return;
 	int x1 = x, x2 = x + width;
 	int y1 = y, y2 = y + height;
-
-	int yLevel = currentFrame / numFrameColumns;
-	uint* src = GetBuffer() + (((currentFrame % numFrameColumns) * width) + (yLevel * width * numFrameColumns * height)); // got help from Justin and Evan
-	
-	if (x1 < 0) src += -x1 * width * numFrames, x1 = 0;
-	if (x2 > target->width) x2 = target->width;
-	if (y1 < 0) src += -y1 * width * numFrames, y1 = 0;
-	if (y2 > target->height) y2 = target->height;
-	uint* dest = target->pixels;
-	//int xs;
-	if (x2 > x1 && y2 > y1) {
-		unsigned int addr = y1 * target->width + x1;
-		const int w = x2 - x1;
-		const int h = y2 - y1;
-		for (int j = 0; j < h; j++) {
-			//const int line = j + (y1 - y);
-			//const int lsx = start[currentFrame][line] + x;
-			//xs = (lsx > x1) ? lsx - x1 : 0;
-			for (int i = 0; i < w; i++) {
-				const uint c1 = *(src + i);
-				if (c1 & 0xffffff) *(dest + addr + i) = c1;
+	if (frames2D) {
+		int yLevel = currentFrame / numColumns;
+		uint* src = GetBuffer() + (((currentFrame % numColumns) * width) + (yLevel * width * numColumns * height)); // got help from Justin and Evan
+		if (x1 < 0) x1 = 0;
+		if (x2 > target->width) x2 = target->width;
+		if (y1 < 0) y1 = 0;
+		if (y2 > target->height) y2 = target->height;
+		uint* dest = target->pixels;
+		if (x2 > x1 && y2 > y1) {
+			unsigned int addr = y1 * target->width + x1;
+			const int w = x2 - x1;
+			const int h = y2 - y1;
+			for (int j = 0; j < h; j++) {
+				for (int i = 0; i < w; i++) {
+					const uint c1 = *(src + i);
+					if (c1 & 0xffffff) *(dest + addr + i) = c1;
+				}
+				addr += target->width;
+				src += width * numColumns;
 			}
-			addr += target->width;
-			src += numFrameColumns * width;
+		}
+	}
+	else {
+		uint* src = GetBuffer() + currentFrame * width;
+		if (x1 < 0) src += -x1, x1 = 0;
+		if (x2 > target->width) x2 = target->width;
+		if (y1 < 0) src += -y1 * width * numFrames, y1 = 0;
+		if (y2 > target->height) y2 = target->height;
+		uint* dest = target->pixels;
+		int xs;
+		if (x2 > x1 && y2 > y1) {
+			unsigned int addr = y1 * target->width + x1;
+			const int w = x2 - x1;
+			const int h = y2 - y1;
+			for (int j = 0; j < h; j++) {
+				const int line = j + (y1 - y);
+				const int lsx = start[currentFrame][line] + x;
+				xs = (lsx > x1) ? lsx - x1 : 0;
+				for (int i = xs; i < w; i++) {
+					const uint c1 = *(src + i);
+					if (c1 & 0xffffff) *(dest + addr + i) = c1;
+				}
+				addr += target->width;
+				src += width * numFrames;
+			}
 		}
 	}
 }
 
+void Sprite::Draw(Surface* target, int x, int y, int frame) {
+	currentFrame = (frame >= 0 && frame < numFrames) ? frame : 0;
+	Draw(target, x, y);
+}
+
 // draw scaled sprite
-void Sprite::DrawScaled(int x1, int y1, int w, int h, Surface* target) {
+void Sprite::DrawScaled(Surface* target, int x1, int y1, int w, int h) {
 	if (width == 0 || height == 0) return;
 	for (int x = 0; x < w; x++) for (int y = 0; y < h; y++) {
 		int u = (int)((float)x * ((float)width / (float)w));
@@ -93,10 +121,11 @@ void Sprite::InitializeStartData() {
 		for (int y = 0; y < height; ++y) {
 			start[f][y] = width;
 			uint* addr = GetBuffer() + f * width + y * width * numFrames;
-			for (int x = 0; x < width; ++x) if (addr[x]) {
-				start[f][y] = x;
-				break;
-			}
+			for (int x = 0; x < width; ++x)
+				if (addr[x]) {
+					start[f][y] = x;
+					break;
+				}
 		}
 	}
 }
