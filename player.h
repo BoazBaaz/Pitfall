@@ -1,5 +1,9 @@
 #pragma once
-class Player {
-	float2 position;
-};
 
+namespace tmpl8 {
+	/*class Player {
+		Player();
+		float2 position;
+		Sprite sprite;
+	};*/
+}
