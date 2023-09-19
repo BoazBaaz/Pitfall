@@ -11,22 +11,21 @@
 #include <iostream>
 
 // objects
-Player player(new Sprite(new Surface("assets/character_sheet.png"), 11), float2(0, 500), 10);
-
-// sprites
-Sprite tileSheet(new Surface("assets/pitfall_tilesheet.png"), 8, 3);
+Player player(new Sprite(new Surface("assets/character_sheet.png"), 11), float2(0, 500), 1);
 
 // tilemap
 TMLoader tml;
-TMLoader::Tilemap tilemap1("tiled/tilemap1.csv");
+TMLoader::Tilemap tilemap1("tiled/tilemap1.csv", 24, 80);
+TMLoader::Tilesheet tilesheet("assets/pitfall_tilesheet.png", 3, 8, uint2(32));
+
 
 void Game::Init() {
-	tml.LoadTilemap(tilemap1, ",");
+
 }
 
 void Game::Tick(float dt) {
 	screen->Clear(0);
-	tml.DrawTilemap(tilemap1, tileSheet, screen, 0 - player.transform.position.x, 0);
+	tml.DrawTilemap(tilemap1, tilesheet, screen, 0 - player.transform.position.x, 0);
 
 	player.Update(input, dt);
 

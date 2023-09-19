@@ -1,12 +1,24 @@
 #include "precomp.h"
 #include "tilemap.h"
 
-void TMLoader::LoadTilemap(Tilemap& tilemap, char* delimiter) {
+#include <iostream>;
+
+TMLoader::Tilemap::~Tilemap() {
+	delete map;
+}
+
+TMLoader::Tilesheet::~Tilesheet() {
+	for (unsigned int i = 0; i < numTiles; i++)
+		delete tiles[i];
+	delete tiles;
+}
+
+void TMLoader::Tilemap::Initialize(char* delimiter) {
 	// got help with the the parsing of csv from ChatGPT
-	FILE* file = fopen(tilemap.file, "r");
+	FILE* f = fopen(file, "r");
 
 	// return if you failed to open the file
-	if (file == nullptr) {
+	if (f == nullptr) {
 		return;
 	}
 
@@ -14,7 +26,7 @@ void TMLoader::LoadTilemap(Tilemap& tilemap, char* delimiter) {
 	char buffer[1024];
 
 	// get 1024 characters from .csv file and load the into the buffer, then loop through all of the characters
-	while (fgets(buffer, sizeof(buffer), file)) {
+	while (fgets(buffer, sizeof(buffer), f)) {
 
 		// put all the characters until the delimiter into the token
 		char* token = strtok(buffer, delimiter);
@@ -39,22 +51,33 @@ void TMLoader::LoadTilemap(Tilemap& tilemap, char* delimiter) {
 			}
 
 			// add the result to the map array
-			tilemap.map[tokenCount++] = result * sign;
+			map[tokenCount++] = (result * sign);
 
 			// get the next token
 			token = strtok(NULL, delimiter);
 		}
 	}
 
-	fclose(file);
+	fclose(f);
 }
 
-void TMLoader::DrawTilemap(Tilemap& tilemap, Sprite& tilesheet, Surface* screen, int x, int y) {
-	int tileWidth = tilesheet.GetWidth();
-	int tileHeight = tilesheet.GetHeight();
-	for (int i = 0; i < sizeof(tilemap.map) / sizeof(int); i++) {
-		int xPos = (i % tilemap.columns) * tileWidth;
-		int yPos = (i / tilemap.columns) * tileHeight;
-		tilesheet.Draw(screen, x + xPos, y + yPos, tilemap.map[i]);
+void TMLoader::Tilesheet::Initialize() {
+	for (uint i = 0; i < numTiles; i++) {
+		tiles[i] = new Surface(tileSize.x, tileSize.y);
+		int x = (i % columns) * tileSize.x;
+		int y = (i / columns) * tileSize.y;
+		tilesheet.CopyTo(tiles[i], x, -y);
 	}
 }
+
+void TMLoader::DrawTilemap(Tilemap& tilemap, Tilesheet& tilesheet, Surface* screen, int x, int y) {
+	uint tileWidth = tilesheet.tileSize.x;
+	uint tileHeight = tilesheet.tileSize.y;
+	for (uint i = 0; i < tilemap.mapSize; i++) {
+		int xPos = (i % tilemap.columns) * tileWidth;
+		int yPos = (i / tilemap.columns) * tileHeight;
+		tilesheet.tiles[tilemap.map[i]]->CopyTo(screen, x + xPos, y + yPos);
+	}
+}
+
+

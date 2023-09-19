@@ -16,7 +16,7 @@ Player::Player(Sprite* sprite, float2 position, float speed) :
 }
 
 Player::~Player() {
-	delete sprite;
+	GameObject::~GameObject();
 }
 
 void Player::Update(Input* input, float dt) {
