@@ -3,37 +3,32 @@
 // IGAD/NHTV/BUAS/UU - Jacco Bikker - 2006-2023
 
 #include "precomp.h"
-#include "tmloader.h"
+#include "tilemap.h"
+#include "gameobject.h"
+#include "player.h"
 #include "game.h"
 
 #include <iostream>
 
+// objects
+Player player(new Sprite(new Surface("assets/character_sheet.png"), 11), float2(0, 500), 10);
+
+// sprites
+Sprite tileSheet(new Surface("assets/pitfall_tilesheet.png"), 8, 3);
+
+// tilemap
 TMLoader tml;
+TMLoader::Tilemap tilemap1("tiled/tilemap1.csv");
 
-TMLoader::Tilemap Tilemap1("tiled/tilemap1.csv");
-float2 tmPos(0, 0);
+void Game::Init() {
+	tml.LoadTilemap(tilemap1, ",");
+}
 
-Sprite CharacterSprites(new Surface("assets/character_sheet.png"), 11);
-Sprite Tilesheet(new Surface("assets/pitfall_tilesheet.png"), 8, 3);
+void Game::Tick(float dt) {
+	screen->Clear(0);
+	tml.DrawTilemap(tilemap1, tileSheet, screen, 0 - player.transform.position.x, 0);
 
-namespace Tmpl8 {
-	void Game::Init() {
-		screen->Clear(0);
-		tml.LoadTilemap(Tilemap1, ",");
-		CharacterSprites.SetFrame(0);
-	}
+	player.Update(input, dt);
 
-	void Game::Tick(float deltaTime) {
-		screen->Clear(0);
-		tml.DrawTilemap(Tilemap1, Tilesheet, screen, 0 - tmPos.x, 0);
-
-		if (input->GetKey(68)) {
-			tmPos.x += 1 * deltaTime;
-		}
-		else if (input->GetKey(65)) {
-			tmPos.x -= 1 * deltaTime;
-		}
-
-		CharacterSprites.DrawScaled(screen, tmPos.x, 500, CharacterSprites.GetWidth(), CharacterSprites.GetHeight());
-	}
+	player.GetSprite()->Draw(screen, player.transform.position.x, 500);
 }

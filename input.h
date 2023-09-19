@@ -1,47 +1,50 @@
 #pragma once
 
-namespace Tmpl8 {
-	class Input {
-		enum class InputState { Up, Down, Released, Pressed };
-	public:
-		// constructor / destructor
-		Input();
-		~Input() = default;
-		
-		// member data access
-		bool GetKey(int key) { return (m_Keyboard.keys[key] == InputState::Down) ? true : false; }
-		bool GetKeyUp(int key) { return (m_Keyboard.keys[key] == InputState::Released) ? true : false; }
-		bool GetKeyDown(int key) { return (m_Keyboard.keys[key] == InputState::Pressed) ? true : false; }
-		bool GetMouseButton(int button) { return (m_Mouse.buttons[button] == InputState::Down) ? true : false; }
-		bool GetMouseButtonUp(int button) { return (m_Mouse.buttons[button] == InputState::Released) ? true : false; }
-		bool GetMouseButtonDown(int button) { return (m_Mouse.buttons[button] == InputState::Pressed) ? true : false; }
-		int2 GetMousePos() { return m_Mouse.position; }
-		int GetMousePosPixel() { return m_Mouse.pixel; }
-		float GetScrollWheel() { return m_Mouse.scroll; }
+using namespace Tmpl8;
 
-		// special operations
-		void KeyInput(int key, bool action) { m_Keyboard.keys[key] = (InputState) InputStateMod((int) m_Keyboard.keys[key], action); }
-		void MouseInput(int button, bool action) { m_Mouse.buttons[button] = (InputState) InputStateMod((int) m_Mouse.buttons[button], action); }
-		void MouseWheel(float y) { m_Mouse.scroll = y; }
-		void MouseMove(int x, int y);
-		void UpdateInputState();
-	private:
-		// special operations
-		int InputStateMod(int curState, int newState); // might be to heacy on the CPU, need to make somehting else
+class Input {
+	enum class InputState { Released, Hold, Up, Down };
+public:
+	// constructor / destructor
+	Input();
+	~Input() = default;
 
-		// static attributes
-		const static uint m_MaxKeys = 256; // might need to change this is there are not enought keys
-		const static uint m_MaxButtons = 6;
+	// member data access
+	bool GetKey(int key) { return (keyboard.keys[key] == InputState::Hold) ? true : false; }
+	bool GetKeyUp(int key) { return (keyboard.keys[key] == InputState::Up) ? true : false; }
+	bool GetKeyDown(int key) { return (keyboard.keys[key] == InputState::Down) ? true : false; }
+	bool GetMouseButton(int button) { return (mouse.buttons[button] == InputState::Hold) ? true : false; }
+	bool GetMouseButtonUp(int button) { return (mouse.buttons[button] == InputState::Up) ? true : false; }
+	bool GetMouseButtonDown(int button) { return (mouse.buttons[button] == InputState::Down) ? true : false; }
+	int2 GetMousePos() { return mouse.position; }
+	int GetMousePosPixel() { return mouse.pixel; }
+	float GetScrollWheel() { return mouse.scroll; }
 
-		// attributes
-		struct Keyboard {
-			InputState keys[m_MaxKeys] = {};
-		} m_Keyboard;
-		struct Mouse {
-			InputState buttons[m_MaxButtons] = {};
-			int2 position;
-			int pixel = 0;
-			float scroll = 0;
-		} m_Mouse;
-	};
-}
+	// special operations
+	void KeyInput(int key, bool action) { keyboard.keys[key] = InputStateMod((int)keyboard.keys[key], action), keyIndex = key; }
+	void MouseInput(int button, bool action) { mouse.buttons[button] = InputStateMod((int)mouse.buttons[button], action), buttonIndex = button; }
+	void MouseWheel(float y) { mouse.scroll = y; }
+	void MouseMove(int x, int y);
+	void UpdateInputState();
+private:
+	// special operations
+	InputState InputStateMod(int curState, int newState);
+
+	// static attributes
+	const static uint MAX_KEYS = 256;
+	const static uint MAX_BUTTONS = 6;
+
+	// attributes
+	int keyIndex = -1;
+	int buttonIndex = -1;
+
+	struct Keyboard {
+		InputState keys[MAX_KEYS] = {};
+	} keyboard;
+	struct Mouse {
+		InputState buttons[MAX_BUTTONS] = {};
+		int2 position = ( 0, 0 );
+		int pixel = 0;
+		float scroll = 0;
+	} mouse;
+};

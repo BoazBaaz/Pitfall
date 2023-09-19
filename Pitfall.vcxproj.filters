@@ -7,7 +7,7 @@
     <ClCompile Include="game.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="tmloader.cpp" />
+    <ClCompile Include="tilemap.cpp" />
     <ClCompile Include="template\opencl.cpp">
       <Filter>template</Filter>
     </ClCompile>
@@ -23,6 +23,7 @@
     <ClCompile Include="template\tmpl8math.cpp">
       <Filter>template</Filter>
     </ClCompile>
+    <ClCompile Include="gameobject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -33,8 +34,8 @@
     </ClInclude>
     <ClInclude Include="game.h" />
     <ClInclude Include="input.h" />
-	<ClInclude Include="player.h" />
-    <ClInclude Include="tmloader.h" />
+    <ClInclude Include="player.h" />
+    <ClInclude Include="tilemap.h" />
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
     </ClInclude>
@@ -53,6 +54,7 @@
     <ClInclude Include="template\tmpl8math.h">
       <Filter>template</Filter>
     </ClInclude>
+    <ClInclude Include="gameobject.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

@@ -29,7 +29,6 @@ namespace Tmpl8 {
 	private:
 		// attributes
 		int width, height;
-		const bool frames2D;
 		unsigned int numColumns, numRows;
 		unsigned int numFrames;
 		unsigned int currentFrame;

@@ -1,9 +1,0 @@
-Copyright/Attribution Notice: 
-Credit to Damar Indra
-https://opengameart.org/users/damarindra
-
-Assets:
-bg0.png
-bg1.png
-bg2.png
-bg3.png

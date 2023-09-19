@@ -10,8 +10,7 @@ using namespace Tmpl8;
 Sprite::Sprite(Surface* surface, unsigned int frameCount) :
 	width(surface->width / frameCount),
 	height(surface->height),
-	frames2D(false),
-	numColumns(0), // This causes an error so I know when it uses the wrong variable 
+	numColumns(frameCount),
 	numRows(0),
 	numFrames(frameCount),
 	currentFrame(0),
@@ -24,7 +23,6 @@ Sprite::Sprite(Surface* surface, unsigned int frameCount) :
 Sprite::Sprite(Surface* surface, unsigned int columns, unsigned int rows) :
 	width(surface->width / columns),
 	height(surface->height / rows),
-	frames2D(true),
 	numColumns(columns),
 	numRows(rows),
 	numFrames(columns* rows),
@@ -49,51 +47,24 @@ void Sprite::Draw(Surface* target, int x, int y) {
 	if (y < -height || y >(target->height + height)) return;
 	int x1 = x, x2 = x + width;
 	int y1 = y, y2 = y + height;
-	if (frames2D) {
-		int yLevel = currentFrame / numColumns;
-		uint* src = GetBuffer() + (((currentFrame % numColumns) * width) + (yLevel * width * numColumns * height)); // got help from Justin and Evan
-		if (x1 < 0) x1 = 0;
-		if (x2 > target->width) x2 = target->width;
-		if (y1 < 0) y1 = 0;
-		if (y2 > target->height) y2 = target->height;
-		uint* dest = target->pixels;
-		if (x2 > x1 && y2 > y1) {
-			unsigned int addr = y1 * target->width + x1;
-			const int w = x2 - x1;
-			const int h = y2 - y1;
-			for (int j = 0; j < h; j++) {
-				for (int i = 0; i < w; i++) {
-					const uint c1 = *(src + i);
-					if (c1 & 0xffffff) *(dest + addr + i) = c1;
-				}
-				addr += target->width;
-				src += width * numColumns;
+	int yLevel = currentFrame / numColumns;
+	uint* src = GetBuffer() + (((currentFrame % numColumns) * width) + (yLevel * width * numColumns * height)); // got help from Justin and Evan
+	if (x1 < 0) x1 = 0;
+	if (x2 > target->width) x2 = target->width;
+	if (y1 < 0) y1 = 0;
+	if (y2 > target->height) y2 = target->height;
+	uint* dest = target->pixels;
+	if (x2 > x1 && y2 > y1) {
+		unsigned int addr = y1 * target->width + x1;
+		const int w = x2 - x1;
+		const int h = y2 - y1;
+		for (int j = 0; j < h; j++) {
+			for (int i = 0; i < w; i++) {
+				const uint c1 = *(src + i);
+				if (c1 & 0xffffff) *(dest + addr + i) = c1;
 			}
-		}
-	}
-	else {
-		uint* src = GetBuffer() + currentFrame * width;
-		if (x1 < 0) src += -x1, x1 = 0;
-		if (x2 > target->width) x2 = target->width;
-		if (y1 < 0) src += -y1 * width * numFrames, y1 = 0;
-		if (y2 > target->height) y2 = target->height;
-		uint* dest = target->pixels;
-		int xs;
-		if (x2 > x1 && y2 > y1) {
-			unsigned int addr = y1 * target->width + x1;
-			const int w = x2 - x1;
-			const int h = y2 - y1;
-			for (int j = 0; j < h; j++) {
-				const int line = j + (y1 - y);
-				const int lsx = start[currentFrame][line] + x;
-				xs = (lsx > x1) ? lsx - x1 : 0;
-				for (int i = xs; i < w; i++) {
-					const uint c1 = *(src + i);
-					if (c1 & 0xffffff) *(dest + addr + i) = c1;
-				}
-				addr += target->width;
-				src += width * numFrames;
-			}
+			addr += target->width;
+			src += width * numColumns;
 		}
 	}
 }

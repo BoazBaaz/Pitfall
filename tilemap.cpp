@@ -1,5 +1,5 @@
 #include "precomp.h"
-#include "tmloader.h"
+#include "tilemap.h"
 
 void TMLoader::LoadTilemap(Tilemap& tilemap, char* delimiter) {
 	// got help with the the parsing of csv from ChatGPT
