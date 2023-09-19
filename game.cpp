@@ -11,7 +11,7 @@
 #include <iostream>
 
 // objects
-Player player(new Sprite(new Surface("assets/character_sheet.png"), 11), float2(0, 500), 1);
+Player player(new Sprite(new Surface("assets/character_sheet.png"), 11), int2(0, 500), 1);
 
 // tilemap
 TMLoader tml;

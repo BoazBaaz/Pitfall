@@ -2,13 +2,13 @@
 #include "gameobject.h"
 #include "player.h"
 
-Player::Player(Sprite* sprite, float2 position) :
+Player::Player(Sprite* sprite, int2 position) :
 	GameObject(sprite, position) {
 	spriteWidth = sprite->GetWidth();
 	spriteHeight = sprite->GetHeight();
 }
 
-Player::Player(Sprite* sprite, float2 position, float speed) :
+Player::Player(Sprite* sprite, int2 position, float speed) :
 	GameObject(sprite, position),
 	speed(speed) {
 	spriteWidth = sprite->GetWidth();
