@@ -17,7 +17,7 @@ using namespace Tmpl8;
 Surface::Surface(int w, int h, uint* b) : pixels(b), width(w), height(h) {}
 
 Surface::Surface(int w, int h) : width(w), height(h) {
-	pixels = (uint*) MALLOC64(w * h * sizeof(uint));
+	pixels = (uint*)MALLOC64(w * h * sizeof(uint));
 	ownBuffer = true; // needs to be deleted in destructor
 }
 Surface::Surface(const char* file) : pixels(0), width(0), height(0) {
@@ -34,7 +34,7 @@ void Surface::LoadFromFile(const char* file) {
 	int n;
 	unsigned char* data = stbi_load(file, &width, &height, &n, 0);
 	if (!data) return; // load failed
-	pixels = (uint*) MALLOC64(width * height * sizeof(uint));
+	pixels = (uint*)MALLOC64(width * height * sizeof(uint));
 	ownBuffer = true; // needs to be deleted in destructor
 	const int s = width * height;
 	if (n == 1) /* greyscale */ for (int i = 0; i < s; i++) {
@@ -64,10 +64,10 @@ void Surface::Plot(int x, int y, uint c) {
 }
 
 void Surface::Box(int x1, int y1, int x2, int y2, uint c) {
-	Line((float) x1, (float) y1, (float) x2, (float) y1, c);
-	Line((float) x2, (float) y1, (float) x2, (float) y2, c);
-	Line((float) x1, (float) y2, (float) x2, (float) y2, c);
-	Line((float) x1, (float) y1, (float) x1, (float) y2, c);
+	Line((float)x1, (float)y1, (float)x2, (float)y1, c);
+	Line((float)x2, (float)y1, (float)x2, (float)y2, c);
+	Line((float)x1, (float)y2, (float)x2, (float)y2, c);
+	Line((float)x1, (float)y1, (float)x1, (float)y2, c);
 }
 
 void Surface::Bar(int x1, int y1, int x2, int y2, uint c) {
@@ -92,12 +92,12 @@ void Surface::Print(const char* s, int x1, int y1, uint c) {
 		fontInitialized = true;
 	}
 	uint* t = pixels + x1 + y1 * width;
-	for (int i = 0; i < (int) (strlen(s)); i++, t += 6) {
+	for (int i = 0; i < (int)(strlen(s)); i++, t += 6) {
 		int pos = 0;
-		if ((s[i] >= 'A') && (s[i] <= 'Z')) pos = transl[(unsigned short) (s[i] - ('A' - 'a'))];
-		else pos = transl[(unsigned short) s[i]];
+		if ((s[i] >= 'A') && (s[i] <= 'Z')) pos = transl[(unsigned short)(s[i] - ('A' - 'a'))];
+		else pos = transl[(unsigned short)s[i]];
 		uint* a = t;
-		const char* u = (const char*) font[pos];
+		const char* u = (const char*)font[pos];
 		for (int v = 0; v < 5; v++, u++, a += width)
 			for (int h = 0; h < 5; h++) if (*u++ == 'o') *(a + h) = c, * (a + h + width) = 0;
 	}
@@ -107,7 +107,7 @@ void Surface::Print(const char* s, int x1, int y1, uint c) {
 // Uses clipping for lines that are partially off-screen. Not efficient.
 void Surface::Line(float x1, float y1, float x2, float y2, uint c) {
 	// clip (Cohen-Sutherland, https://en.wikipedia.org/wiki/Cohen%E2%80%93Sutherland_algorithm)
-	const float xmin = 0, ymin = 0, xmax = (float) width - 1, ymax = (float) height - 1;
+	const float xmin = 0, ymin = 0, xmax = (float)width - 1, ymax = (float)height - 1;
 	int c0 = OUTCODE(x1, y1), c1 = OUTCODE(x2, y2);
 	bool accept = false;
 	while (1) {
@@ -126,10 +126,10 @@ void Surface::Line(float x1, float y1, float x2, float y2, uint c) {
 	if (!accept) return;
 	float b = x2 - x1, h = y2 - y1, l = fabsf(b);
 	if (fabsf(h) > l) l = fabsf(h);
-	int il = (int) l;
-	float dx = b / (float) l, dy = h / (float) l;
+	int il = (int)l;
+	float dx = b / (float)l, dy = h / (float)l;
 	for (int i = 0; i <= il; i++, x1 += dx, y1 += dy)
-		*(pixels + (int) x1 + (int) y1 * width) = c;
+		*(pixels + (int)x1 + (int)y1 * width) = c;
 }
 
 // Surface::CopyTo: Copy the contents of one Surface to another, at the specified
@@ -145,7 +145,7 @@ void Surface::CopyTo(Surface* d, int x, int y) {
 		if ((srcwidth + x) > dstwidth) srcwidth = dstwidth - x;
 		if ((srcheight + y) > dstheight) srcheight = dstheight - y;
 		if (x < 0) src -= x, srcwidth += x, x = 0;
-		if (y < 0) src -= y * srcwidth, srcheight += y, y = 0;
+		if (y < 0) src -= y * width, srcheight += y, y = 0;
 		if ((srcwidth > 0) && (srcheight > 0)) {
 			dst += x + dstwidth * y;
 			for (int i = 0; i < srcheight; i++) {
@@ -218,5 +218,5 @@ void Surface::InitCharset() {
 	char c[] = "abcdefghijklmnopqrstuvwxyz0123456789!?:=,.-() #'*/";
 	int i;
 	for (i = 0; i < 256; i++) transl[i] = 45;
-	for (i = 0; i < 50; i++) transl[(unsigned char) c[i]] = i;
+	for (i = 0; i < 50; i++) transl[(unsigned char)c[i]] = i;
 }

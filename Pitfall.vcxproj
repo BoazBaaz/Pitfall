@@ -125,7 +125,7 @@
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="tilemap.cpp" />
+    <ClCompile Include="tmloader.cpp" />
     <ClCompile Include="template\opencl.cpp" />
     <ClCompile Include="template\opengl.cpp" />
     <ClCompile Include="template\sprite.cpp" />
@@ -144,7 +144,7 @@
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="tilemap.h" />
+    <ClInclude Include="tmloader.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\opencl.h" />
     <ClInclude Include="template\opengl.h" />

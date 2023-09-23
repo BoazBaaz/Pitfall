@@ -1,25 +1,30 @@
 #include "precomp.h"
 #include "gameobject.h"
 
-GameObject::GameObject(Sprite* sprite, float2 position) :
+Tmpl8::GameObject::GameObject(Sprite* sprite, int2 position, float speed) :
+	left(position.x),
+	right(position.x + sprite->GetWidth()),
+	top(position.y),
+	bottom(position.y + sprite->GetHeight()),
+	position(position),
+	velocity(0),
+	width(sprite->GetWidth()),
+	height(sprite->GetHeight()), 
 	sprite(sprite),
-	transform{ position, float2(0, 0) } {
-}
-
-GameObject::GameObject(Sprite* sprite, float x, float y) :
-	sprite(sprite),
-	transform{ float2(x, y), float2(0, 0) } {
-
+	speed(speed) {
 }
 
 GameObject::~GameObject() {
 	delete sprite;
 }
 
-void GameObject::Update(Input* input, float dt) {
-
+void GameObject::Update(float dt) {
+	left = position.x;
+	right = position.x + width;
+	top = position.y;
+	bottom = position.y + height;
 }
 
-void GameObject::Collision() {
+void GameObject::Render(Surface* screen) {
+	sprite->Draw(screen, position.x, position.y);
 }
-

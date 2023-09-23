@@ -1,28 +1,39 @@
 #pragma once
 
-using namespace Tmpl8;
+namespace Tmpl8 {
+	class GameObject {
+	public:
+		// constructor / destructor
+		GameObject(Sprite* sprite, int2 position, float speed = 1);
+		~GameObject();
 
-class GameObject {
-	struct Transform { float2 position, velocity; };
-public:
-	// constructor / destructor
-	GameObject(Sprite* sprite, float2 position);
-	GameObject(Sprite* sprite, float x, float y);
-	~GameObject();
+		// member data access
+		int2 GetPos() const { return position; }
+		float2 GetVel() const { return velocity; }
+		uint GetWidth() const { return width; }
+		uint GetHeight() const { return height; }
+		Sprite* GetSprite() const { return sprite; }
+		void SetPos(int x, int y) { position.x = x, position.y = y; }
+		void SetPos(int2 pos) { position = pos; }
+		void SetVel(float x, float y) { velocity.x = x, velocity.y = y; }
+		void SetVel(float2 vel) { velocity = vel; }
 
-	// member data access
-	Sprite* GetSprite() { return sprite; }
+		// special operations
+		void Update(float dt);
+		void Render(Surface* screen);
 
-	// special operations
-	void Update(Input* input, float dt);
-	void Collision();
+		// attributes
+		int left;
+		int right;
+		int top;
+		int bottom;
 
-	// attributes
-	Transform transform;
-	bool onScreen = false;
-
-protected:
-	// attributes
-	Sprite* sprite;
-
-};
+	protected:
+		// attributes
+		int2 position;
+		float2 velocity;
+		uint width, height;
+		Sprite* sprite;
+		float speed = 1;
+	};
+}

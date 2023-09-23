@@ -5,11 +5,29 @@
 #pragma once
 
 namespace Tmpl8 {
+	class Tilesheet; 
+	class Tilemap; 
+	class GameObject;
+	class Player;
 	class Game : public TheApp {
 	public:
 		// game flow methods
 		void Init();
 		void Tick(float deltaTime);
-		void Shutdown() { /* implement if you want to do something on exit */ }
+		void Shutdown();
+
+	private:
+		// special opperations
+		void ClampCamera();
+		void UpdateEntities(float dt);
+		void RenderEntities();
+
+		int2 camPos;
+
+		Tilesheet* tilesheet = 0;
+		Tilemap* tilemap = 0;
+
+		GameObject* enities = 0;
+		Player* player = 0;
 	};
 }

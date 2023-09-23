@@ -11,12 +11,10 @@ namespace Tmpl8 {
 	public:
 		// structors
 		Sprite(Surface* surface, unsigned int frameCount);
-		Sprite(Surface* surface, unsigned int rows, unsigned int columns);
 		~Sprite();
 		// methods
 		void Draw(Surface* target, int x, int y);
-		void Draw(Surface* target, int x, int y, int frame);
-		void DrawScaled(Surface* target, int x, int y, int width, int height);
+		void DrawScaled(int x, int y, int width, int height, Surface* target);
 		void SetFlags(unsigned int f) { flags = f; }
 		void SetFrame(unsigned int i) { currentFrame = i; }
 		unsigned int GetFlags() const { return flags; }
@@ -29,11 +27,11 @@ namespace Tmpl8 {
 	private:
 		// attributes
 		int width, height;
-		unsigned int numColumns, numRows;
 		unsigned int numFrames;
 		unsigned int currentFrame;
 		unsigned int flags;
 		unsigned int** start;
 		Surface* surface;
 	};
+
 }

@@ -1,46 +1,44 @@
 #include "precomp.h"
+#include "tmloader.h"
 #include "gameobject.h"
 #include "player.h"
 
-Player::Player(Sprite* sprite, int2 position) :
-	GameObject(sprite, position) {
-	spriteWidth = sprite->GetWidth();
-	spriteHeight = sprite->GetHeight();
+#define GRAVITY			9.81f
+#define DECELERATION	0.995f
+
+Player::Player(Input* input, Sprite* sprite, int2 position, float jumpHight, float speed) :
+	GameObject(sprite, position, speed),
+	jumpHight(jumpHight),
+	input(input) {
 }
 
-Player::Player(Sprite* sprite, int2 position, float speed) :
-	GameObject(sprite, position),
-	speed(speed) {
-	spriteWidth = sprite->GetWidth();
-	spriteHeight = sprite->GetHeight();
-}
+void Player::Update(float dt) {
 
-Player::~Player() {
-	GameObject::~GameObject();
-}
-
-void Player::Update(Input* input, float dt) {
+	// Input
 	if (input->GetKey(68)) {
-		transform.position.x += speed * dt;
+		position.x += speed * dt;
 	}
 	if (input->GetKey(65)) {
-		transform.position.x -= speed * dt;
+		position.x -= speed * dt;
+	}
+	if (input->GetKeyDown(32)) {
+		velocity.y = -jumpHight * 10;
+		onGround = false;
 	}
 
-	//if (transform.position.x > SCRWIDTH - spriteWidth || transform.position.x < 0) {
-	//	transform.position.x = Max(0.0f, Min((float)SCRWIDTH - spriteWidth, transform.position.x));
-	//	transform.velocity.x = -transform.velocity.x;
-	//}
+	if (onGround == false) {
+		velocity.y += GRAVITY;
+	}
 
-	//// if you release space and the ground collision is true, update the velocity and acceleration and reset the boost
-	//if (game->input->GetKeyUp(SDL_SCANCODE_SPACE) && boostReady) {
-	//	transform.velocity = (input->GetMousePos() - transform.position).normalized() * boostPower;
-	//	boostReady = false;
-	//}
+	// add gravity and deceleration to the velocity
+	velocity *= DECELERATION;
 
-	// update the player position
-	//BouncePhysics(game, dt);
+	// update the position using the velocity
+	position.x += velocity.x * dt;
+	position.y += velocity.y * dt;
 
-	// draw the object
-	//Draw(screen);
+	printf("PosX: %i, PosY: %i\n", position.x, position.y);
+	printf("VelX: %f, VelY: %f\n", velocity.x, velocity.y);
+
+	GameObject::Update(dt);
 }

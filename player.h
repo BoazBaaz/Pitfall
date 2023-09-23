@@ -1,18 +1,21 @@
 #pragma once
 
-using namespace Tmpl8;
+namespace Tmpl8 {
+	class Player : public GameObject {
+	public:
+		// constructor / destructor
+		Player(Input* input, Sprite* sprite, int2 position, float jumpHight, float speed = 1);
+		~Player() = default;
 
-class Player : public GameObject {
-public:
-	// constructor / destructor
-	Player(Sprite* sprite, int2 position);
-	Player(Sprite* sprite, int2 position, float speed);
-	~Player();
+		// special operations
+		void Update(float dt);
 
-	void Update(Input* input, float dt);
+		// attributes
+		bool onGround = false;
 
-private:
-	// attributes
-	float speed;
-	int spriteWidth, spriteHeight;
-};
+	private:
+		// attributes
+		float jumpHight = 0;
+		Input* input;
+	};
+}
