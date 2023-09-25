@@ -1,7 +1,7 @@
 #include "precomp.h"
 #include "gameobject.h"
 
-Tmpl8::GameObject::GameObject(Sprite* sprite, int2 position, float speed) :
+Tmpl8::GameObject::GameObject(Sprite* sprite, float2 position, float speed) :
 	left(position.x),
 	right(position.x + sprite->GetWidth()),
 	top(position.y),

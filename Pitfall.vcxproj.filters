@@ -24,6 +24,7 @@
       <Filter>template</Filter>
     </ClCompile>
     <ClCompile Include="gameobject.cpp" />
+    <ClCompile Include="camera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -55,6 +56,7 @@
       <Filter>template</Filter>
     </ClInclude>
     <ClInclude Include="gameobject.h" />
+    <ClInclude Include="camera.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

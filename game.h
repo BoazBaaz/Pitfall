@@ -9,6 +9,7 @@ namespace Tmpl8 {
 	class Tilemap; 
 	class GameObject;
 	class Player;
+	class Camera;
 	class Game : public TheApp {
 	public:
 		// game flow methods
@@ -18,11 +19,10 @@ namespace Tmpl8 {
 
 	private:
 		// special opperations
-		void ClampCamera();
 		void UpdateEntities(float dt);
 		void RenderEntities();
 
-		int2 camPos;
+		Camera* camera;
 
 		Tilesheet* tilesheet = 0;
 		Tilemap* tilemap = 0;

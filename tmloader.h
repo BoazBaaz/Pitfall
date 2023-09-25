@@ -15,7 +15,7 @@ namespace Tmpl8 {
 		void InitializeTilesheet(const char* filename);
 
 		// attributes
-		uint rows, columns; // the number of rows and columns of the tilesheet
+		uint columns, rows; // the number of rows and columns of the tilesheet
 		uint numTiles; // the number of total tiles
 		uint tileSize; // the size of a tile in pixels
 	private:
@@ -29,16 +29,15 @@ namespace Tmpl8 {
 			Tile() = default;
 			Tile(int tileID) : tileID(tileID) {
 				switch (tileID) {
-					case 0:
-					case 6:
-						tileState = TileStates::collision;
+					case -1:
+					case 39:
+						tileState = TileStates::none;
 						break;
-					case 4:
-					case 5:
+					case 29:
 						tileState = TileStates::ladder;
 						break;
 					default:
-						tileState = TileStates::none;
+						tileState = TileStates::collision;
 						break;
 				}
 			}
@@ -47,7 +46,7 @@ namespace Tmpl8 {
 		};
 	public:
 		// constructor / destructor
-		Tilemap(const char* filename, uint rows, uint columns, int2 tilemapStart);
+		Tilemap(const char* filename, uint rows, uint columns);
 		~Tilemap();
 
 		// member data access
@@ -56,13 +55,12 @@ namespace Tmpl8 {
 
 		// special opperations
 		void InitializeTilemap();
-		void Render(Tilesheet* tilesheet, Surface* screen, int2 camPos);
+		void Render(Tilesheet* tilesheet, Surface* screen, float2 offset);
 		void Collision(Tilesheet* tilesheet, Player* object);
 
 		// attributes
-		uint rows, columns; // the number of rows and columns of the tilemap
+		uint columns, rows; // the number of rows and columns of the tilemap
 		uint mapSize; // the size of the tilemap
-		int2 position;
 
 	private:
 		// attributes

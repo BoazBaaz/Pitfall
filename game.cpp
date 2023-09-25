@@ -6,22 +6,24 @@
 #include "tmloader.h"
 #include "gameobject.h"
 #include "player.h"
+#include "camera.h"
 #include "game.h"
 
 #include <iostream>
 
-#define TM_ROWS		24
-#define TM_COLUMNS	80
-#define TM_STARTX	0
-#define TM_STARTY	0
+#define TM_COLUMNS	128
+#define TM_ROWS		64
+#define TS_COLUMNS	10
+#define TS_ROWS		4
 
 
 void Game::Init() {
-	tilesheet = new Tilesheet("assets/pitfall_tilesheet.png", 3, 8);
-	tilemap = new Tilemap("tiled/tilemap1.csv", TM_ROWS, TM_COLUMNS, int2(TM_STARTX, TM_STARTY));
+	tilesheet = new Tilesheet("assets/Tileset.png", 10, 4);
+	tilemap = new Tilemap("tiled/tilemap2.csv", TM_COLUMNS, TM_ROWS);
 
-	player = new Player(input, new Sprite(new Surface("assets/character_sheet.png"), 11), int2(SCRWIDTH / 2, SCRHEIGHT / 2), 50, 400);
+	player = new Player(input, new Sprite(new Surface("assets/character_sheet.png"), 11), float2(SCRWIDTH / 2, SCRHEIGHT / 2), 600, 400);
 
+	camera = new Camera(TM_COLUMNS * tilesheet->tileSize - SCRWIDTH, TM_ROWS * tilesheet->tileSize - SCRHEIGHT, 5);
 }
 
 void Game::Tick(float dt) {
@@ -34,14 +36,13 @@ void Game::Tick(float dt) {
 
 	// COLLISION
 	tilemap->Collision(tilesheet, player);
-	
+
 	// CAMERA
-	camPos.x = player->GetPos().x;
-	camPos.y = player->GetPos().y;
-	ClampCamera();
+ 	camera->SetTarget(player->GetPos());
+	camera->Update(dt);
 
 	// RENDER TILEMAPS
-	tilemap->Render(tilesheet, screen, camPos);
+	tilemap->Render(tilesheet, screen, camera->GetPos());
 
 	// RENDER ENTITIES
 	RenderEntities();
@@ -55,10 +56,10 @@ void Game::Tick(float dt) {
 				player->GetPos().x + player->GetWidth(),
 				player->GetPos().y + player->GetHeight(),
 				0xFF0000);
-	screen->Box(camPos.x,
-				camPos.y,
-				camPos.x + SCRWIDTH,
-				camPos.y + SCRHEIGHT,
+	screen->Box(camera->GetPos().x,
+				camera->GetPos().y,
+				camera->GetPos().x + SCRWIDTH,
+				camera->GetPos().y + SCRHEIGHT,
 				0x0000FF);
 }
 
@@ -66,15 +67,7 @@ void Game::Shutdown() {
 	delete tilesheet;
 	delete tilemap;
 	delete player;
-}
-
-void Game::ClampCamera() {
-	int maxX = TM_COLUMNS * tilesheet->tileSize - SCRWIDTH;
-	int maxY = TM_ROWS * tilesheet->tileSize - SCRHEIGHT;
-
-	// Clamp the camera position to stay within the tilemap boundaries
-	camPos.x = clamp(camPos.x, 0, maxX);
-	camPos.y = clamp(camPos.y, 0, maxY);
+	delete camera;
 }
 
 void Game::UpdateEntities(float dt) {

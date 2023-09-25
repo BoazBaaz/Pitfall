@@ -3,9 +3,8 @@
 #include "player.h"
 #include "tmloader.h"
 
-Tilemap::Tilemap(const char* filename, uint rows, uint columns, int2 tilemapStart) :
+Tilemap::Tilemap(const char* filename, uint rows, uint columns) :
 	file(filename),
-	position(tilemapStart),
 	rows(rows),
 	columns(columns),
 	mapSize(rows* columns),
@@ -17,9 +16,9 @@ Tilemap::~Tilemap() {
 	delete map;
 }
 
-Tilesheet::Tilesheet(const char* filename, uint rows, uint columns, uint tileSize) :
-	rows(rows),
+Tilesheet::Tilesheet(const char* filename, uint columns, uint rows, uint tileSize) :
 	columns(columns),
+	rows(rows),
 	numTiles(rows* columns),
 	tileSize(tileSize),
 	tiles(new Surface* [rows * columns]) {
@@ -90,29 +89,30 @@ void Tilesheet::InitializeTilesheet(const char* filename) {
 	}
 }
 
-void Tilemap::Render(Tilesheet* tilesheet, Surface* screen, int2 camPos) {
+void Tilemap::Render(Tilesheet* tilesheet, Surface* screen, float2 offset) {
+	uint tileSize = tilesheet->tileSize;
 	for (int i = 0; i < mapSize; i++) {
-		int tileX = ((i % columns) * tilesheet->tileSize) + position.x - camPos.x;
-		int tileY = ((i / columns) * tilesheet->tileSize) + position.y - camPos.y;
-
 		if (map[i].tileID >= 0) {
-			if (tileX + tilesheet->tileSize > 0 && tileX < SCRWIDTH &&
-				tileY + tilesheet->tileSize > 0 && tileY < SCRHEIGHT) {
+			int tileX = ((i % columns) * tileSize) + offset.x;
+			int tileY = ((i / columns) * tileSize) + offset.y;
+
+			if (tileX + tileSize > offset.x && tileX < offset.x + SCRWIDTH &&
+				tileY + tileSize > offset.y && tileY < offset.y + SCRHEIGHT) {
 				tilesheet->GetTile(map[i].tileID)->CopyTo(screen, tileX, tileY);
 			}
+			screen->Box(tileX, tileY, tileX + tileSize, tileY + tileSize, 0xFF0000);
 		}
 	}
 }
 
-void Tilemap::Collision(Tilesheet* tilesheet, Player* object) {
+void Tilemap::Collision(Tilesheet* tilesheet, Player* player) {
 	// I used this tutorial https://jonathanwhiting.com/tutorial/collision/
-
 	int tileSize = static_cast<int>(tilesheet->tileSize);
 
-	int leftTile = object->left / tileSize;
-	int rightTile = object->right / tileSize;
-	int topTile = object->top / tileSize;
-	int bottomTile = object->bottom / tileSize;
+	int leftTile = player->left / tileSize;
+	int rightTile = player->right / tileSize;
+	int topTile = player->top / tileSize;
+	int bottomTile = player->bottom / tileSize;
 
 	if (leftTile < 0) leftTile = 0;
 	if (rightTile > columns) rightTile = columns;
@@ -123,15 +123,17 @@ void Tilemap::Collision(Tilesheet* tilesheet, Player* object) {
 		for (int y = topTile; y <= bottomTile; y++) {
 			Tile tile = map[x + y * columns];
 			if (tile.tileState == TileStates::collision) {
-				object->onGround = true;
-				object->SetVel(0.0f);
-				//int tilePosX = position.x + (x * tileSize);
-				//int tilePosY = position.y + (y * tileSize);
 
-				//int closestX = clamp(object->GetPos().x, tilePosX, tilePosX + tileSize);
-				//int closestY = clamp(object->GetPos().y, tilePosY, tilePosY + tileSize);
-				
-				//object->SetPos(closestX, closestY);
+				int tilePosX = x * tileSize;
+				int tilePosY = y * tileSize;
+
+				//int closestX = std::clamp(static_cast<int>(player->GetPos().x), tilePosX, tilePosX + tileSize - static_cast<int>(player->GetWidth()));
+				//int closestY = std::clamp(static_cast<int>(player->GetPos().y), tilePosY - static_cast<int>(player->GetHeight()), tilePosY);
+
+				player->SetVel(0.0f);
+				//player->SetPos(closestX, closestY);
+				player->onGround = true;
+				player->canJump = true;
 			}
 		}
 	}

@@ -4,11 +4,11 @@ namespace Tmpl8 {
 	class GameObject {
 	public:
 		// constructor / destructor
-		GameObject(Sprite* sprite, int2 position, float speed = 1);
+		GameObject(Sprite* sprite, float2 position, float speed = 1);
 		~GameObject();
 
 		// member data access
-		int2 GetPos() const { return position; }
+		float2 GetPos() const { return position; }
 		float2 GetVel() const { return velocity; }
 		uint GetWidth() const { return width; }
 		uint GetHeight() const { return height; }
@@ -19,8 +19,8 @@ namespace Tmpl8 {
 		void SetVel(float2 vel) { velocity = vel; }
 
 		// special operations
-		void Update(float dt);
-		void Render(Surface* screen);
+		virtual void Update(float dt);
+		virtual void Render(Surface* screen);
 
 		// attributes
 		int left;
@@ -30,7 +30,7 @@ namespace Tmpl8 {
 
 	protected:
 		// attributes
-		int2 position;
+		float2 position;
 		float2 velocity;
 		uint width, height;
 		Sprite* sprite;
