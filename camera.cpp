@@ -50,7 +50,6 @@ void Camera::RenderTilemap(Tilemap* tilemap, Tilesheet* tilesheet) {
 				renderPos.y + tileSize.y >= 0 && renderPos.y <= SCRHEIGHT) {
 				tilesheet->Sheet(tilemap->Map(i).tileID)->CopyTo(screen, renderPos.x, renderPos.y);
 			}
-			screen->Box(renderPos.x, renderPos.y, renderPos.x + tileSize.x, renderPos.y + tileSize.y, 0xFF00FF);
 		}
 	}
 }
@@ -66,5 +65,4 @@ void Camera::RenderSprite(Sprite* sprite, uint frame, float2 pos) {
 
 void Camera::RenderTarget() {
 	target->GetSprite()->Draw(screen, target->GetPos().x - position.x, target->GetPos().y - position.y);
-	screen->Box(target->GetPos().x, target->GetPos().y, target->GetPos().x + target->GetSprite()->GetWidth(), target->GetPos().y + target->GetSprite()->GetHeight(), 0xFF0000);
 }
