@@ -60,9 +60,6 @@ using namespace std;
 
 // my own headers
 #include "input.h"
-#include "gameobject.h"
-#include "player.h"
-#include "tmloader.h"
 
 // namespaces
 using namespace Tmpl8;

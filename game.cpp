@@ -3,27 +3,30 @@
 // IGAD/NHTV/BUAS/UU - Jacco Bikker - 2006-2023
 
 #include "precomp.h"
-#include "tmloader.h"
 #include "gameobject.h"
 #include "player.h"
+#include "tmloader.h"
 #include "camera.h"
 #include "game.h"
 
 #include <iostream>
 
-#define TM_COLUMNS	128
-#define TM_ROWS		64
 #define TS_COLUMNS	10
 #define TS_ROWS		4
+#define TILE_SIZE_X	32
+#define TILE_SIZE_Y	32
+#define TM_COLUMNS	128
+#define TM_ROWS		64
 
 
 void Game::Init() {
-	tilesheet = new Tilesheet("assets/Tileset.png", 10, 4);
+	tilesheet = new Tilesheet("assets/Tileset.png", TS_COLUMNS, TS_ROWS, uint2(TILE_SIZE_X, TILE_SIZE_Y));
 	tilemap = new Tilemap("tiled/tilemap2.csv", TM_COLUMNS, TM_ROWS);
 
-	player = new Player(input, new Sprite(new Surface("assets/character_sheet.png"), 11), float2(SCRWIDTH / 2, SCRHEIGHT / 2), 600, 400);
+	player = new Player(input, new Sprite(new Surface("assets/character_sheet.png"), 11), float2(64, 128), 600, 300);
 
-	camera = new Camera(TM_COLUMNS * tilesheet->tileSize - SCRWIDTH, TM_ROWS * tilesheet->tileSize - SCRHEIGHT, 5);
+	camera = new Camera(screen, TM_COLUMNS * TILE_SIZE_X, TM_ROWS * TILE_SIZE_Y, 800);
+	camera->SetTarget(player);
 }
 
 void Game::Tick(float dt) {
@@ -33,34 +36,15 @@ void Game::Tick(float dt) {
 	// UPDATE
 	UpdateEntities(dt);
 	player->Update(dt);
+	camera->Update(dt);
 
 	// COLLISION
 	tilemap->Collision(tilesheet, player);
 
-	// CAMERA
- 	camera->SetTarget(player->GetPos());
-	camera->Update(dt);
-
-	// RENDER TILEMAPS
-	tilemap->Render(tilesheet, screen, camera->GetPos());
-
-	// RENDER ENTITIES
+	// RENDER
+	camera->RenderTilemap(tilemap, tilesheet);
 	RenderEntities();
-	player->Render(screen);
-
-
-
-	// GIZMO
-	screen->Box(player->GetPos().x,
-				player->GetPos().y,
-				player->GetPos().x + player->GetWidth(),
-				player->GetPos().y + player->GetHeight(),
-				0xFF0000);
-	screen->Box(camera->GetPos().x,
-				camera->GetPos().y,
-				camera->GetPos().x + SCRWIDTH,
-				camera->GetPos().y + SCRHEIGHT,
-				0x0000FF);
+	camera->RenderTarget(); // the player
 }
 
 void Game::Shutdown() {

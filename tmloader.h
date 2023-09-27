@@ -4,12 +4,12 @@ namespace Tmpl8 {
 	class Tilesheet {
 	public:
 		// constructor / destructor
-		Tilesheet(const char* filename, uint rows, uint columns, uint tileSize = 32);
+		Tilesheet(const char* filename, uint columns, uint rows, uint2 tileSize = 32);
 		~Tilesheet();
 
 		// member data access
-		Surface* GetTile(int index) { return tiles[index]; }
-		Surface* GetTile(int x, int y) { return tiles[x + y * columns]; }
+		Surface* Sheet(int index) { return tiles[index]; }
+		Surface* Sheet(int x, int y) { return tiles[x + y * columns]; }
 
 		// special opperations
 		void InitializeTilesheet(const char* filename);
@@ -17,7 +17,7 @@ namespace Tmpl8 {
 		// attributes
 		uint columns, rows; // the number of rows and columns of the tilesheet
 		uint numTiles; // the number of total tiles
-		uint tileSize; // the size of a tile in pixels
+		uint2 tileSize; // the size of a tile in pixels
 	private:
 		// attributes
 		Surface** tiles;
@@ -46,17 +46,16 @@ namespace Tmpl8 {
 		};
 	public:
 		// constructor / destructor
-		Tilemap(const char* filename, uint rows, uint columns);
+		Tilemap(const char* filename, uint columns, uint rows);
 		~Tilemap();
 
 		// member data access
-		Tile GetTile(int index) { return map[index]; }
-		Tile GetTile(int x, int y) { return map[x + y * columns]; }
+		Tile Map(int index) { return map[index]; }
+		Tile Map(int x, int y) { return map[x + y * columns]; }
 
 		// special opperations
 		void InitializeTilemap();
-		void Render(Tilesheet* tilesheet, Surface* screen, float2 offset);
-		void Collision(Tilesheet* tilesheet, Player* object);
+		void Collision(Tilesheet* tilesheet, GameObject* object);
 
 		// attributes
 		uint columns, rows; // the number of rows and columns of the tilemap

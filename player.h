@@ -9,16 +9,10 @@ namespace Tmpl8 {
 
 		// special operations
 		void Update(float dt) override;
-		void Render(Surface* screen) override;
-
-		// attributes
-		bool onGround = false;
-		bool canJump = false;
 
 	private:
 		// attributes
 		float jumpHight = 0;
-		int2 renderPos;
 		Input* input;
 	};
 }

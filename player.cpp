@@ -1,5 +1,4 @@
 #include "precomp.h"
-#include "tmloader.h"
 #include "gameobject.h"
 #include "player.h"
 
@@ -9,11 +8,12 @@
 Player::Player(Input* input, Sprite* sprite, float2 position, float jumpHight, float speed) :
 	GameObject(sprite, position, speed),
 	jumpHight(jumpHight),
-	renderPos(SCRWIDTH / 2 - sprite->GetWidth() / 2, SCRHEIGHT / 2 - sprite->GetHeight() / 2),
 	input(input) {
 }
 
 void Player::Update(float dt) {
+	GameObject::Update(dt);
+
 	// Input
 	if (input->GetKey(68)) {
 		velocity.x = speed;
@@ -21,10 +21,9 @@ void Player::Update(float dt) {
 	if (input->GetKey(65)) {
 		velocity.x = -speed;
 	}
-	if (input->GetKeyDown(32) && canJump) {
+	if (input->GetKeyDown(32) && onGround) {
 		velocity.y = -jumpHight;
 		onGround = false;
-		canJump = false;
 	}
 
 	if (onGround == false) {
@@ -39,9 +38,4 @@ void Player::Update(float dt) {
 	printf("PosX: %f, PosY: %f\n", position.x, position.y);
 	printf("VelX: %f, VelY: %f\n", velocity.x, velocity.y);
 
-	GameObject::Update(dt);
-}
-
-void Player::Render(Surface* screen) {
-	sprite->Draw(screen, position.x, position.y);
 }
