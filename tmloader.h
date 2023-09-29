@@ -55,7 +55,7 @@ namespace Tmpl8 {
 
 		// special opperations
 		void InitializeTilemap();
-		void Collision(Tilesheet* tilesheet, GameObject* object, float dt, Surface* screen);
+		void Collision(Tilesheet* tilesheet, GameObject* object, float dt);
 
 		// attributes
 		uint columns, rows; // the number of rows and columns of the tilemap

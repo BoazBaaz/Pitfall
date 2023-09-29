@@ -90,7 +90,7 @@ void Tilesheet::InitializeTilesheet(const char* filename) {
 }
 
 // I help from this tutorial https://jonathanwhiting.com/tutorial/collision/
-void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt, Surface* screen) {
+void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt) {
 	float2 nextPos = object->GetPos() + object->GetVel() * dt;
 
 	// get the tiles that the player corners is overlapping with
@@ -124,7 +124,6 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt, Surf
 
 				object->SetVel(0.0f, object->GetVel().y);
 			}
-			screen->Box(tileX * tilesheet->tileSize.x, y * tilesheet->tileSize.y, tileX * tilesheet->tileSize.x + tilesheet->tileSize.x, y * tilesheet->tileSize.y + tilesheet->tileSize.y, 0xFF0000);
 		}
 	}
 
@@ -134,21 +133,28 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt, Surf
 
 	// check for collisions on the Y axis
 	if (object->GetVel().y != 0) {
-		int tileY = (object->GetVel().y < 0) ? topTile : (bottomTile + 1);
-
+		int tileY = (object->GetVel().y < 0) ? (topTile - 1) : (bottomTile + 1);
+		
 		for (int x = leftTile; x <= rightTile; x++) {
 			if (map[x + tileY * columns].tileState == TileStates::collision) {
+
 				if (object->GetVel().y < 0) {
-					object->SetPos(object->GetPos().x, tileY * tilesheet->tileSize.y + tilesheet->tileSize.y);
+					float newY = tileY * tilesheet->tileSize.y + tilesheet->tileSize.y;
+					if (object->GetPos().y - 4 < newY) {
+						object->SetPos(object->GetPos().x, newY);
+						object->SetVel(object->GetVel().x, 0.0f);
+					}
 				}
 				else if (object->GetVel().y > 0) {
-					object->SetPos(object->GetPos().x, tileY * tilesheet->tileSize.y - object->GetSize().y);
-					grounded = true; 
+					float newY = tileY * tilesheet->tileSize.y - object->GetSize().y;
+					if (object->GetPos().y + 4 > newY) {
+						object->SetPos(object->GetPos().x, newY);
+						object->SetVel(object->GetVel().x, 0.0f);
+						grounded = true;
+					}
 				}
 
-				object->SetVel(object->GetVel().x, 0.0f);
 			}
-			screen->Box(x * tilesheet->tileSize.x, tileY * tilesheet->tileSize.y, x * tilesheet->tileSize.x + tilesheet->tileSize.x, tileY * tilesheet->tileSize.y + tilesheet->tileSize.y, 0x0000FF);
 		}
 	}
 
