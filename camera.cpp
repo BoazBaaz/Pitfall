@@ -64,5 +64,7 @@ void Camera::RenderSprite(Sprite* sprite, uint frame, float2 pos) {
 }
 
 void Camera::RenderTarget() {
+
 	target->GetSprite()->Draw(screen, target->GetPos().x - position.x, target->GetPos().y - position.y);
+	screen->Box(target->GetPos().x, target->GetPos().y, target->GetPos().x + target->GetSize().x, target->GetPos().y + target->GetSize().y, 0x00FF00);
 }

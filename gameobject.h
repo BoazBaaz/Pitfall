@@ -16,11 +16,12 @@ namespace Tmpl8 {
 
 		// member data access
 		float2 GetPos() const { return position; }
+		float2 GetLastPos() const { return lastPosition; }
 		float2 GetVel() const { return velocity; }
 		uint2 GetSize() const { return size; }
 		Sprite* GetSprite() const { return sprite; }
 		void SetPos(float x, float y) { position.x = x, position.y = y; }
-		void SetPos(int2 pos) { position = pos; }
+		void SetPos(float2 pos) { position = pos; }
 		void SetVel(float x, float y) { velocity.x = x, velocity.y = y; }
 		void SetVel(float2 vel) { velocity = vel; }
 

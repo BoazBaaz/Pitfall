@@ -6,7 +6,7 @@ Tilemap::Tilemap(const char* filename, uint columns, uint rows) :
 	file(filename),
 	columns(columns),
 	rows(rows),
-	mapSize(rows * columns),
+	mapSize(rows* columns),
 	map(new Tile[rows * columns]) {
 	InitializeTilemap();
 }
@@ -89,15 +89,13 @@ void Tilesheet::InitializeTilesheet(const char* filename) {
 	}
 }
 
-// I used this tutorial https://jonathanwhiting.com/tutorial/collision/
-void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object) {
-	uint2 tileSize = tilesheet->tileSize;
-
+// I help from this tutorial https://jonathanwhiting.com/tutorial/collision/
+void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, Surface* screen) {
 	// get the tiles that the player corners is overlapping with
-	int leftTile = object->GetPos().x / tileSize.x;
-	int rightTile = (object->GetPos().x + object->GetSize().x) / tileSize.x;
-	int topTile = object->GetPos().y / tileSize.y;
-	int bottomTile = (object->GetPos().y + object->GetSize().y) / tileSize.y;
+	int leftTile = object->GetPos().x / tilesheet->tileSize.x;
+	int rightTile = (object->GetPos().x + object->GetSize().x) / tilesheet->tileSize.x;
+	int topTile = object->GetPos().y / tilesheet->tileSize.y;
+	int bottomTile = (object->GetPos().y + object->GetSize().y) / tilesheet->tileSize.y;
 
 	// clamp the player collision to alway be inside the grid
 	if (leftTile < 0) leftTile = 0;
@@ -105,24 +103,48 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object) {
 	if (topTile < 0) topTile = 0;
 	if (bottomTile > rows) bottomTile = rows;
 
-	// go through all the tiles the player is overlapping
-	for (int x = leftTile; x <= rightTile; x++) {
-		for (int y = topTile; y <= bottomTile; y++) {
+	// collision check for the X axis
+	if (object->GetVel().x != 0) {
+		int tileX = 0;
 
-			// check if the tile is collidable
-			if (map[x + y * columns].tileState == TileStates::collision) {
-
-				// get the tile position in the world
-				int tilePosX = x * tileSize.x;
-				int tilePosY = y * tileSize.y;
-
-				//int closestX = std::clamp(static_cast<int>(object->GetPos().x), tilePosX, tilePosX + tileSize - static_cast<int>(player->GetWidth()));
-				//int closestY = std::clamp(static_cast<int>(object->GetPos().y), tilePosY - static_cast<int>(player->GetHeight()), tilePosY);
-				//object->SetPos(closestX, closestY);
-
-				object->SetVel(0.0f);
-				object->onGround = true;
-			}
+		if (object->GetVel().x < 0) {
+			tileX = leftTile;
 		}
+		else if (object->GetVel().x > 0) {
+			tileX = rightTile;
+		}
+
+		for (int y = topTile; y <= bottomTile; y++) {
+			if (map[tileX + y * columns].tileState == TileStates::collision) {
+				object->SetVel(0.0f, object->GetVel().y);
+				object->SetPos(object->GetLastPos().x, object->GetPos().y);
+			}
+			screen->Box(tileX * tilesheet->tileSize.x, y * tilesheet->tileSize.y, tileX * tilesheet->tileSize.x + tilesheet->tileSize.x, y * tilesheet->tileSize.y + tilesheet->tileSize.y, 0xFF0000);
+		}
+	}
+
+	// collision check for the Y axis
+	if (object->GetVel().y != 0) {
+		int tileY = 0;
+
+		if (object->GetVel().y < 0) {
+			tileY = topTile;
+		}
+		else if (object->GetVel().y > 0) {
+			tileY = bottomTile;
+		}
+
+		bool grounded = false;
+
+		for (int x = leftTile; x <= rightTile; x++) {
+			if (map[x + tileY * columns].tileState == TileStates::collision) {
+				object->SetVel(object->GetVel().x, 0.0f);
+				object->SetPos(object->GetPos().x, object->GetLastPos().y);
+				if (tileY == bottomTile)
+					grounded = true;
+			}
+			screen->Box(x * tilesheet->tileSize.x, tileY * tilesheet->tileSize.y, x * tilesheet->tileSize.x + tilesheet->tileSize.x, tileY * tilesheet->tileSize.y + tilesheet->tileSize.y, 0x0000FF);
+		}
+		object->onGround = grounded;
 	}
 }
