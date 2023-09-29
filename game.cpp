@@ -23,7 +23,7 @@ void Game::Init() {
 	tilesheet = new Tilesheet("assets/Tileset.png", TS_COLUMNS, TS_ROWS, uint2(TILE_SIZE_X, TILE_SIZE_Y));
 	tilemap = new Tilemap("tiled/tilemap2.csv", TM_COLUMNS, TM_ROWS);
 
-	player = new Player(input, new Sprite(new Surface("assets/character_sheet.png"), 11), float2(64, 128), 800, 400);
+	player = new Player(input, new Sprite(new Surface("assets/test_player.png"), 1), float2(64, 128), uint2(48, 48), 800, 400);
 
 	camera = new Camera(screen, TM_COLUMNS * TILE_SIZE_X, TM_ROWS * TILE_SIZE_Y, 1000);
 	camera->SetTarget(player);
@@ -38,13 +38,13 @@ void Game::Tick(float dt) {
 	player->Update(dt);
 	camera->Update(dt);
 
+	// COLLISION
+	tilemap->Collision(tilesheet, player, dt);
 
 	// RENDER
 	camera->RenderTilemap(tilemap, tilesheet);
 	RenderEntities();
 	camera->RenderTarget(); // the player
-	// COLLISION
-	tilemap->Collision(tilesheet, player, dt);
 }
 
 void Game::Shutdown() {

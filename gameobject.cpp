@@ -5,10 +5,17 @@
 #define DECELERATION	0.995f
 
 GameObject::GameObject(Sprite* sprite, float2 position, float speed) :
-
 	position(position),
 	velocity(0),
 	size(sprite->GetWidth(), sprite->GetHeight()),
+	sprite(sprite),
+	speed(speed) {
+}
+
+Tmpl8::GameObject::GameObject(Sprite* sprite, float2 position, uint2 size, float speed) :
+	position(position),
+	velocity(0),
+	size(size),
 	sprite(sprite),
 	speed(speed) {
 }

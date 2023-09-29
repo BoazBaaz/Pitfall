@@ -11,7 +11,8 @@ namespace Tmpl8 {
 		};
 	public:
 		// constructor / destructor
-		GameObject(Sprite* sprite, float2 position, float speed = 1);
+		GameObject(Sprite* sprite, float2 position, float speed);
+		GameObject(Sprite* sprite, float2 position, uint2 size, float speed);
 		~GameObject();
 
 		// member data access

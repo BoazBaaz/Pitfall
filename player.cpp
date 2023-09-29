@@ -8,6 +8,12 @@ Player::Player(Input* input, Sprite* sprite, float2 position, float jumpHight, f
 	input(input) {
 }
 
+Tmpl8::Player::Player(Input* input, Sprite* sprite, float2 position, uint2 size, float jumpHight, float speed) :
+	GameObject(sprite, position, size, speed),
+	jumpHight(jumpHight),
+	input(input) {
+}
+
 void Player::Update(float dt) {
 	// Input
 	if (input->GetKey(68)) {
