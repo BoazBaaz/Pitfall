@@ -90,12 +90,14 @@ void Tilesheet::InitializeTilesheet(const char* filename) {
 }
 
 // I help from this tutorial https://jonathanwhiting.com/tutorial/collision/
-void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, Surface* screen) {
+void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt, Surface* screen) {
+	float2 nextPos = object->GetPos() + object->GetVel() * dt;
+
 	// get the tiles that the player corners is overlapping with
-	int leftTile = object->GetPos().x / tilesheet->tileSize.x;
-	int rightTile = (object->GetPos().x + object->GetSize().x) / tilesheet->tileSize.x;
-	int topTile = object->GetPos().y / tilesheet->tileSize.y;
-	int bottomTile = (object->GetPos().y + object->GetSize().y) / tilesheet->tileSize.y;
+	int leftTile = (nextPos.x + 2) / tilesheet->tileSize.x;
+	int rightTile = (nextPos.x + object->GetSize().x - 2) / tilesheet->tileSize.x;
+	int topTile = (nextPos.y + 2) / tilesheet->tileSize.y;
+	int bottomTile = (nextPos.y + object->GetSize().y - 2) / tilesheet->tileSize.y;
 
 	// clamp the player collision to alway be inside the grid
 	if (leftTile < 0) leftTile = 0;
@@ -103,48 +105,52 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, Surface* scree
 	if (topTile < 0) topTile = 0;
 	if (bottomTile > rows) bottomTile = rows;
 
-	// collision check for the X axis
-	if (object->GetVel().x != 0) {
-		int tileX = 0;
+	bool grounded = false;
 
-		if (object->GetVel().x < 0) {
-			tileX = leftTile;
-		}
-		else if (object->GetVel().x > 0) {
-			tileX = rightTile;
-		}
+	// check for collisions on the X axis
+	if (object->GetVel().x != 0) {
+		int tileX = (object->GetVel().x < 0) ? leftTile : rightTile;
 
 		for (int y = topTile; y <= bottomTile; y++) {
 			if (map[tileX + y * columns].tileState == TileStates::collision) {
+				if (object->GetVel().x < 0) {
+					object->SetPos(tileX * tilesheet->tileSize.x + tilesheet->tileSize.x, object->GetPos().y);
+				}
+				else if (object->GetVel().x > 0) {
+					object->SetPos(tileX * tilesheet->tileSize.x - object->GetSize().x, object->GetPos().y);
+				}
+
+				nextPos.x = object->GetPos().x;
+
 				object->SetVel(0.0f, object->GetVel().y);
-				object->SetPos(object->GetLastPos().x, object->GetPos().y);
 			}
 			screen->Box(tileX * tilesheet->tileSize.x, y * tilesheet->tileSize.y, tileX * tilesheet->tileSize.x + tilesheet->tileSize.x, y * tilesheet->tileSize.y + tilesheet->tileSize.y, 0xFF0000);
 		}
 	}
 
-	// collision check for the Y axis
+	// update the tiles on the X axis
+	leftTile = (nextPos.x + 2) / tilesheet->tileSize.x;
+	rightTile = (nextPos.x + object->GetSize().x - 2) / tilesheet->tileSize.x;
+
+	// check for collisions on the Y axis
 	if (object->GetVel().y != 0) {
-		int tileY = 0;
-
-		if (object->GetVel().y < 0) {
-			tileY = topTile;
-		}
-		else if (object->GetVel().y > 0) {
-			tileY = bottomTile;
-		}
-
-		bool grounded = false;
+		int tileY = (object->GetVel().y < 0) ? topTile : (bottomTile + 1);
 
 		for (int x = leftTile; x <= rightTile; x++) {
 			if (map[x + tileY * columns].tileState == TileStates::collision) {
+				if (object->GetVel().y < 0) {
+					object->SetPos(object->GetPos().x, tileY * tilesheet->tileSize.y + tilesheet->tileSize.y);
+				}
+				else if (object->GetVel().y > 0) {
+					object->SetPos(object->GetPos().x, tileY * tilesheet->tileSize.y - object->GetSize().y);
+					grounded = true; 
+				}
+
 				object->SetVel(object->GetVel().x, 0.0f);
-				object->SetPos(object->GetPos().x, object->GetLastPos().y);
-				if (tileY == bottomTile)
-					grounded = true;
 			}
 			screen->Box(x * tilesheet->tileSize.x, tileY * tilesheet->tileSize.y, x * tilesheet->tileSize.x + tilesheet->tileSize.x, tileY * tilesheet->tileSize.y + tilesheet->tileSize.y, 0x0000FF);
 		}
-		object->onGround = grounded;
 	}
+
+	object->onGround = grounded;
 }

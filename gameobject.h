@@ -16,7 +16,6 @@ namespace Tmpl8 {
 
 		// member data access
 		float2 GetPos() const { return position; }
-		float2 GetLastPos() const { return lastPosition; }
 		float2 GetVel() const { return velocity; }
 		uint2 GetSize() const { return size; }
 		Sprite* GetSprite() const { return sprite; }
@@ -36,7 +35,6 @@ namespace Tmpl8 {
 	protected:
 		// attributes
 		float2 position;
-		float2 lastPosition;
 		float2 velocity;
 		uint2 size;
 		Sprite* sprite;

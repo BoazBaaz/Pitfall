@@ -18,8 +18,6 @@ GameObject::~GameObject() {
 }
 
 void GameObject::Update(float dt) {
-	lastPosition = position;
-
 	velocity.y += GRAVITY;
 
 	velocity.y *= DECELERATION;
@@ -27,7 +25,4 @@ void GameObject::Update(float dt) {
 
 	position.x += velocity.x * dt;
 	position.y += velocity.y * dt;
-
-	printf("PosX: %f, PosY: %f\n", position.x, position.y);
-	printf("VelX: %f, VelY: %f\n", velocity.x, velocity.y);
 }

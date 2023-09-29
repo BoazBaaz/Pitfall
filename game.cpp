@@ -44,7 +44,7 @@ void Game::Tick(float dt) {
 	RenderEntities();
 	camera->RenderTarget(); // the player
 	// COLLISION
-	tilemap->Collision(tilesheet, player, screen);
+	tilemap->Collision(tilesheet, player, dt, screen);
 }
 
 void Game::Shutdown() {
