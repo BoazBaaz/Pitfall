@@ -63,6 +63,9 @@ namespace Tmpl8 {
 
 	private:
 		// attributes
+		float collisionMargin = 2.0f;
+		float snapMargin = 8.0f;
+
 		const char* file;
 		Tile* map;
 	};

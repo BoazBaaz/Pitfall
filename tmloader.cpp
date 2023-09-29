@@ -94,10 +94,10 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt) {
 	float2 nextPos = object->GetPos() + object->GetVel() * dt;
 
 	// get the tiles that the player corners is overlapping with
-	int leftTile = (nextPos.x + 2) / tilesheet->tileSize.x;
-	int rightTile = (nextPos.x + object->GetSize().x - 2) / tilesheet->tileSize.x;
-	int topTile = (nextPos.y + 2) / tilesheet->tileSize.y;
-	int bottomTile = (nextPos.y + object->GetSize().y - 2) / tilesheet->tileSize.y;
+	int leftTile = (nextPos.x + collisionMargin) / tilesheet->tileSize.x;
+	int rightTile = (nextPos.x + object->GetSize().x - collisionMargin) / tilesheet->tileSize.x;
+	int topTile = (nextPos.y + collisionMargin) / tilesheet->tileSize.y;
+	int bottomTile = (nextPos.y + object->GetSize().y - collisionMargin) / tilesheet->tileSize.y;
 
 	// clamp the player collision to alway be inside the grid
 	if (leftTile < 0) leftTile = 0;
@@ -140,14 +140,14 @@ void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt) {
 
 				if (object->GetVel().y < 0) {
 					float newY = tileY * tilesheet->tileSize.y + tilesheet->tileSize.y;
-					if (object->GetPos().y - 4 < newY) {
+					if (object->GetPos().y - snapMargin < newY) {
 						object->SetPos(object->GetPos().x, newY);
 						object->SetVel(object->GetVel().x, 0.0f);
 					}
 				}
 				else if (object->GetVel().y > 0) {
 					float newY = tileY * tilesheet->tileSize.y - object->GetSize().y;
-					if (object->GetPos().y + 4 > newY) {
+					if (object->GetPos().y + snapMargin > newY) {
 						object->SetPos(object->GetPos().x, newY);
 						object->SetVel(object->GetVel().x, 0.0f);
 						grounded = true;
