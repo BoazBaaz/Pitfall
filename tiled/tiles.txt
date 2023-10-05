@@ -1,0 +1,42 @@
+ladder
+7 /*Ladder Top*/
+20 /*Ladder Middle*/
+33 /*Ladder Bottom*/
+
+none
+8 /*Cobweb1*/
+9 /*Cobweb2*/
+10 /*Cobweb3*/
+11 /*Cobweb4*/
+12 /*Cage Top*/
+21 /*Sign Left*/
+25 /*Cage Bottom*/ 
+34 /*Sign Right*/
+35 /*Chain1*/
+36 /*Chain2*/
+37 /*Chain3*/
+38 /*Chain Top*/
+46 /*Fase Grey*/
+47 /*Barrel*/ 
+49 /*Door Top Open*/
+50 /*Chain Half*/
+51 /*Chain Bottom*/
+59 /*Fase Brown*/
+62 /*Door Bottom Open*/
+
+Death
+63
+64
+74
+75
+76
+77
+
+Collision
+22 /*Platform Middle*/
+23 /*Platform Left*/
+24 /*Platform Right*/
+48 /*Door Top Closed*/
+60 /*Wood Block*/
+61 /*Door Bottom Closed*/
+73 /*Wood Box*/

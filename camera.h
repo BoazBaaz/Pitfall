@@ -13,8 +13,8 @@ namespace Tmpl8 {
 
 		// special opperations
 		void Update(float dt);
-		void RenderTilemap(Tilemap* surface, Tilesheet* tilesheet);
-		void RenderSprite(Sprite* sprite, uint frame, float2 pos);
+		void RenderTilemap(Tilemap* tilemap);
+		void RenderGameObject(GameObject* object, uint frame);
 		void RenderTarget();
 
 	private:

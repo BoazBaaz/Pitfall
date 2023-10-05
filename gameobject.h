@@ -2,13 +2,6 @@
 
 namespace Tmpl8 {
 	class GameObject {
-		enum States {
-			idle = 0,
-			moving,
-			jumping,
-			crouching,
-			swiming
-		};
 	public:
 		// constructor / destructor
 		GameObject(Sprite* sprite, float2 position, float speed);
@@ -26,12 +19,8 @@ namespace Tmpl8 {
 		void SetVel(float2 vel) { velocity = vel; }
 
 		// special operations
-		virtual void Update(float dt);
-
-		// attributes
-		//States state = States::idle;
-
-		bool onGround = false;
+		virtual void Update(float dt) {};
+		virtual void Collided(GameObject* object) {};
 
 	protected:
 		// attributes
@@ -39,6 +28,6 @@ namespace Tmpl8 {
 		float2 velocity;
 		uint2 size;
 		Sprite* sprite;
-		float speed = 1;
+		float speed = 0;
 	};
 }

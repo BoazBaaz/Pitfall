@@ -122,6 +122,7 @@
   <!-- END Custom section -->
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="input.cpp" />
@@ -142,6 +143,7 @@
   <ItemGroup>
     <ClInclude Include="camera.h" />
     <ClInclude Include="cl\tools.cl" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="input.h" />

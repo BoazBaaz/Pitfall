@@ -1,39 +1,51 @@
 #include "precomp.h"
-#include "gameobject.h"
 #include "tmloader.h"
 
-Tilemap::Tilemap(const char* filename, uint columns, uint rows) :
-	file(filename),
-	columns(columns),
-	rows(rows),
-	mapSize(rows* columns),
-	map(new Tile[rows * columns]) {
-	InitializeTilemap();
-}
-
-Tilemap::~Tilemap() {
-	delete map;
-}
-
-Tilesheet::Tilesheet(const char* filename, uint columns, uint rows, uint2 tileSize) :
+Tileset::Tileset(const char* filename, uint columns, uint rows, uint2 tileSize) :
 	columns(columns),
 	rows(rows),
 	numTiles(rows* columns),
 	tileSize(tileSize),
 	tiles(new Surface* [rows * columns]) {
-	InitializeTilesheet(filename);
+	InitializeTileset(filename);
 }
 
-Tilesheet::~Tilesheet() {
+Tileset::~Tileset() {
 	for (unsigned int i = 0; i < numTiles; i++)
 		delete tiles[i];
 	delete tiles;
 }
 
+void Tileset::InitializeTileset(const char* filename) {
+	Surface tileset(filename);
+	for (uint i = 0; i < numTiles; i++) {
+		tiles[i] = new Surface(tileSize.x, tileSize.y);
+		int x = (i % columns) * tileSize.x;
+		int y = (i / columns) * tileSize.y;
+		tileset.CopyTo(tiles[i], -x, -y);
+	}
+
+}
+
+Tilemap::Tilemap(const char* filename, Tileset* tileset, uint columns, uint rows) :
+	columns(columns),
+	rows(rows),
+	mapSize(rows* columns),
+	tileSize(tileset->tileSize),
+	map(new Tile[columns * rows]),
+	surface(new Surface(columns * tileset->tileSize.x, rows * tileset->tileSize.y)) {
+	InitializeTilemap(filename, tileset);
+}
+
+Tilemap::~Tilemap() {
+	delete map;
+	delete surface;
+}
+
 // I got help with the the parsing of csv from ChatGPT
-void Tilemap::InitializeTilemap() {
+void Tilemap::InitializeTilemap(const char* filename, Tileset* tileset) {
 	// open the file
-	FILE* f = fopen(file, "r");
+	FILE* f = fopen(filename, "r");
 
 	// return if you failed to open the file
 	if (f == nullptr) {
@@ -68,8 +80,20 @@ void Tilemap::InitializeTilemap() {
 				token++;
 			}
 
-			// add the result to the map array
-			map[tokenCount++] = Tile(result * sign);
+			// calculate the position of the tile on the surface
+			int x = (tokenCount % columns) * tileSize.x;
+			int y = (tokenCount / columns) * tileSize.y;
+
+			// draw the tile to the tilemap and add the result to the map array
+			int index = result * sign;
+			if (index >= 0)
+				tileset->GetSurface(index)->CopyTo(surface, x, y);
+			else
+				surface->Bar(x, y, x + tileSize.x, y + tileSize.y, 0x0);
+			map[tokenCount] = Tile(index);
+
+			// increase the token count
+			tokenCount++;
 
 			// get the next token
 			token = strtok(NULL, ",");
@@ -77,86 +101,4 @@ void Tilemap::InitializeTilemap() {
 	}
 
 	fclose(f);
-}
-
-void Tilesheet::InitializeTilesheet(const char* filename) {
-	Surface tilesheet(filename);
-	for (uint i = 0; i < numTiles; i++) {
-		tiles[i] = new Surface(tileSize.x, tileSize.y);
-		int x = (i % columns) * tileSize.x;
-		int y = (i / columns) * tileSize.y;
-		tilesheet.CopyTo(tiles[i], -x, -y);
-	}
-}
-
-// I help from this tutorial https://jonathanwhiting.com/tutorial/collision/
-void Tilemap::Collision(Tilesheet* tilesheet, GameObject* object, float dt) {
-	float2 nextPos = object->GetPos() + object->GetVel() * dt;
-
-	// get the tiles that the player corners is overlapping with
-	int leftTile = (nextPos.x + collisionMargin) / tilesheet->tileSize.x;
-	int rightTile = (nextPos.x + object->GetSize().x - collisionMargin) / tilesheet->tileSize.x;
-	int topTile = (nextPos.y + collisionMargin) / tilesheet->tileSize.y;
-	int bottomTile = (nextPos.y + object->GetSize().y - collisionMargin) / tilesheet->tileSize.y;
-
-	// clamp the player collision to alway be inside the grid
-	if (leftTile < 0) leftTile = 0;
-	if (rightTile > columns) rightTile = columns;
-	if (topTile < 0) topTile = 0;
-	if (bottomTile > rows) bottomTile = rows;
-
-	bool grounded = false;
-
-	// check for collisions on the X axis
-	if (object->GetVel().x != 0) {
-		int tileX = (object->GetVel().x < 0) ? leftTile : rightTile;
-
-		for (int y = topTile; y <= bottomTile; y++) {
-			if (map[tileX + y * columns].tileState == TileStates::collision) {
-				if (object->GetVel().x < 0) {
-					object->SetPos(tileX * tilesheet->tileSize.x + tilesheet->tileSize.x, object->GetPos().y);
-				}
-				else if (object->GetVel().x > 0) {
-					object->SetPos(tileX * tilesheet->tileSize.x - object->GetSize().x, object->GetPos().y);
-				}
-
-				nextPos.x = object->GetPos().x;
-
-				object->SetVel(0.0f, object->GetVel().y);
-			}
-		}
-	}
-
-	// update the tiles on the X axis
-	leftTile = (nextPos.x + 2) / tilesheet->tileSize.x;
-	rightTile = (nextPos.x + object->GetSize().x - 2) / tilesheet->tileSize.x;
-
-	// check for collisions on the Y axis
-	if (object->GetVel().y != 0) {
-		int tileY = (object->GetVel().y < 0) ? (topTile - 1) : (bottomTile + 1);
-		
-		for (int x = leftTile; x <= rightTile; x++) {
-			if (map[x + tileY * columns].tileState == TileStates::collision) {
-
-				if (object->GetVel().y < 0) {
-					float newY = tileY * tilesheet->tileSize.y + tilesheet->tileSize.y;
-					if (object->GetPos().y - snapMargin < newY) {
-						object->SetPos(object->GetPos().x, newY);
-						object->SetVel(object->GetVel().x, 0.0f);
-					}
-				}
-				else if (object->GetVel().y > 0) {
-					float newY = tileY * tilesheet->tileSize.y - object->GetSize().y;
-					if (object->GetPos().y + snapMargin > newY) {
-						object->SetPos(object->GetPos().x, newY);
-						object->SetVel(object->GetVel().x, 0.0f);
-						grounded = true;
-					}
-				}
-
-			}
-		}
-	}
-
-	object->onGround = grounded;
 }

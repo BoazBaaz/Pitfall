@@ -25,6 +25,7 @@
     </ClCompile>
     <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="camera.cpp" />
+    <ClCompile Include="enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -57,6 +58,7 @@
     </ClInclude>
     <ClInclude Include="gameobject.h" />
     <ClInclude Include="camera.h" />
+    <ClInclude Include="enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">

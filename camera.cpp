@@ -35,34 +35,17 @@ void Camera::Update(float dt) {
 				   clamp(target->GetPos().y, 0.0f, static_cast<float>(worldHeight) - target->GetSize().y));
 }
 
-void Camera::RenderTilemap(Tilemap* tilemap, Tilesheet* tilesheet) {
-	uint2 tileSize = tilesheet->tileSize;
-
-	// go through the tilemap and check if you need to draw this tile
-	for (int i = 0; i < tilemap->mapSize; i++) {
-		if (tilemap->Map(i).tileID >= 0) {
-
-			// get the tile position relative to the camera
-			float2 renderPos = { (i % tilemap->columns) * tileSize.x - position.x, (i / tilemap->columns) * tileSize.y - position.y };
-
-			// check if the tile should be draw to the screen
-			if (renderPos.x + tileSize.x >= 0 && renderPos.x <= SCRWIDTH &&
-				renderPos.y + tileSize.y >= 0 && renderPos.y <= SCRHEIGHT) {
-				tilesheet->Sheet(tilemap->Map(i).tileID)->CopyTo(screen, renderPos.x, renderPos.y);
-			}
-		}
-	}
+void Camera::RenderTilemap(Tilemap* tilemap) {
+	float2 renderPos = { -position.x, -position.y };
+	tilemap->GetSurface()->CopyTo(screen, renderPos.x, renderPos.y);
 }
 
-void Camera::RenderSprite(Sprite* sprite, uint frame, float2 pos) {
-	float2 renderPos = { pos.x - position.x, pos.y - position.y };
-	if (renderPos.x + sprite->GetWidth() >= 0 && renderPos.x <= SCRWIDTH &&
-		renderPos.y + sprite->GetHeight() >= 0 && renderPos.y <= SCRHEIGHT) {
-		sprite->SetFrame(frame);
-		sprite->Draw(screen, renderPos.x, renderPos.y);
-	}
+void Camera::RenderGameObject(GameObject* object, uint frame) {
+	float2 renderPos = object->GetPos() - position;
+	object->GetSprite()->SetFrame(frame);
+	object->GetSprite()->Draw(screen, renderPos.x, renderPos.y);
 }
 
 void Camera::RenderTarget() {
-	target->GetSprite()->DrawScaled(target->GetPos().x - position.x, target->GetPos().y - position.y, target->GetSize().x, target->GetSize().y, screen);
+	target->GetSprite()->Draw(screen, target->GetPos().x - position.x, target->GetPos().y - position.y);
 }
