@@ -7,6 +7,7 @@
 namespace Tmpl8 {
 	class Tileset; 
 	class Tilemap; 
+	class EntityMap;
 	class GameObject;
 	class Player;
 	class Enemy;
@@ -27,7 +28,7 @@ namespace Tmpl8 {
 		int score = 0;
 		Camera* camera;
 		Tilemap* tilemap;
-		GameObject* entities[20] = { nullptr };
+		EntityMap* entityMap;
 		Player* player;
 	};
 }

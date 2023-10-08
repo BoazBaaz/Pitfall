@@ -149,7 +149,12 @@ void Surface::CopyTo(Surface* d, int x, int y) {
 		if ((srcwidth > 0) && (srcheight > 0)) {
 			dst += x + dstwidth * y;
 			for (int i = 0; i < srcheight; i++) {
-				memcpy(dst, src, srcwidth * 4);
+				// Evan helped me change this
+				for (int j = 0; j < srcwidth; j++) {
+					const uint c1 = *(src + j);
+					if (c1 & 0xffffff && c1 != 3452816845) *(dst + j) = c1;
+				}
+				//memcpy(dst, src, srcwidth * 4);
 				dst += dstwidth, src += width;
 			}
 		}

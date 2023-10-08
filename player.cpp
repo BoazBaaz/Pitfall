@@ -3,9 +3,6 @@
 #include "gameobject.h"
 #include "player.h"
 
-#define GRAVITY			9.81f
-#define DECELERATION	0.995f
-
 Player::Player(Input* input, Sprite* sprite, float2 position, float speed) :
 	GameObject(sprite, position, speed),
 	input(input) {
@@ -56,10 +53,10 @@ void Player::TileCollision(Tilemap* tilemap, float dt) {
 	// loop through all the tile that are overlapping with the player
 	for (int x = leftTile; x <= rightTile; x++) {
 		for (int y = topTile; y <= bottomTile; y++) {
-			Tilemap::TileStates tileState = tilemap->GetTile(x + y * tilemap->columns).tileState;
+			Tilemap::TileStates tileState = tilemap->GetTile(x, y).tileState;
 
 			// check if the player is overlapping with a ladder
-			if (tileState == Tilemap::TileStates::ladder) { 
+			if (tileState == Tilemap::TileStates::ladder) {
 				if (input->GetKey(87)) { /*W*/
 					climbing = true;
 					velocity.y = -ladderSpeed;
@@ -102,7 +99,7 @@ void Player::TileCollision(Tilemap* tilemap, float dt) {
 
 		// loop through all the tiles above or below the player
 		for (int x = leftTile; x <= rightTile; x++) {
-			Tilemap::TileStates tileState = tilemap->GetTile(x + tileY * tilemap->columns).tileState;
+			Tilemap::TileStates tileState = tilemap->GetTile(x, tileY).tileState;
 
 			// check if the player has collided with a tile while it is not climbing
 			if (tileState == Tilemap::TileStates::collision && !climbing) {

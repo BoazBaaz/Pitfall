@@ -1,23 +1,15 @@
 #pragma once
 
 namespace Tmpl8 {
+	class Tilemap;
 	class Enemy : public GameObject {
+		enum EnemyType { Static = 0, Follow, Path };
 	public:
 		// constructor / destructor
-		Enemy(Sprite* sprite, float2 position, float speed);
+		Enemy(Sprite* sprite, float2 position, float speed = 0);
 
-		// special operations
-		void Collided(GameObject* entity) override;
-
-	private:
-		// attributes
-		float knockback = 100.0f;
-	};
-
-	class StaticEnemy : public Enemy {
-	public:
-		// constructor / destructor
-		StaticEnemy(Sprite* sprite, float2 position);
+	protected:
+		float stopDist = 10.0f;
 	};
 
 	class FollowEnemy : public Enemy {
@@ -30,24 +22,21 @@ namespace Tmpl8 {
 
 	private:
 		// attributes
-		float stopDist = 10.0f;
-		GameObject* target;
 		Tilemap* tilemap;
+		GameObject* target;
 	};
 
 	class PathEnemy : public Enemy {
 	public:
 		// constructor / destructor
-		PathEnemy(Sprite* sprite, float2 position, float speed, float x1, float x2);
+		PathEnemy(Sprite* sprite, float2 position, float speed, bool dest, float dist);
 
 		// special operations
 		void Update(float dt) override;
 
 	private:
 		// attributes
-		float stopDist = 10.0f;
-		float leftX, rightX;
-		GameObject* target;
-		Tilemap* tilemap;
+		float dest0, dest1;
+		float curDest;
 	};
 }

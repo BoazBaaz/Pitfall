@@ -20,18 +20,13 @@
 
 void Game::Init() {
 	Tileset dungeonTileset = Tileset("assets/Incolgames/dungeon_tileset.png", 13, 6, uint2(TILE_SIZE_X, TILE_SIZE_Y));
+	Tileset entityTileset = Tileset("assets/entity_tileset.png", 4, 0, uint2(TILE_SIZE_X, TILE_SIZE_Y));
 	tilemap = new Tilemap("tiled/pitfall_Main.csv", &dungeonTileset, TM_COLUMNS, TM_ROWS);
-
-	//Tileset entityTileset = Tileset("assets/Incolgames/entity_tileset.png", 4, 0, uint2(TILE_SIZE_X, TILE_SIZE_Y));
-	//Tilemap objects = Tilemap("tiled/pitfall_Objects.csv", &entityTileset, TM_COLUMNS, TM_ROWS);
-
-
 	player = new Player(input, new Sprite(new Surface("assets/test_player.png"), 1), float2(256, 128), 500);
+	entityMap = new EntityMap("tiled/pitfall_Objects.csv", &entityTileset, TM_COLUMNS, TM_ROWS, player, tilemap);
 
 	camera = new Camera(screen, TM_COLUMNS * TILE_SIZE_X, TM_ROWS * TILE_SIZE_Y, 1000);
 	camera->SetTarget(player);
-
-	//entities[0] = new StaticEnemy()
 }
 
 void Game::Tick(float dt) {
@@ -39,13 +34,13 @@ void Game::Tick(float dt) {
 	screen->Clear(0);
 
 	// UPDATE
-	UpdateEntities(dt);
 	player->Update(dt);
 	camera->Update(dt);
+	UpdateEntities(dt);
 
 	// COLLISION
-	CollisionEntities();
 	player->TileCollision(tilemap, dt);
+	CollisionEntities();
 
 	// RENDER
 	camera->RenderTilemap(tilemap);
@@ -56,34 +51,44 @@ void Game::Tick(float dt) {
 void Game::Shutdown() {
 	delete camera;
 	delete tilemap;
+	delete entityMap;
 	delete player;
 }
 
 void Game::UpdateEntities(float dt) {
-	for (GameObject* entity : entities) {
-		if (entity->GetPos().x + entity->GetSize().x >= camera->GetPos().x && entity->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
-			entity->GetPos().y + entity->GetSize().y >= camera->GetPos().y && entity->GetPos().y <= camera->GetPos().y +  SCRHEIGHT) {
-			entity->Update(dt);
+	for (uint i = 0; i < entityMap->entityCount; i++) {
+		if (entityMap->entities[i] != NULL) {
+			if (entityMap->entities[i]->GetPos().x + entityMap->entities[i]->GetSize().x >= camera->GetPos().x && entityMap->entities[i]->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
+				entityMap->entities[i]->GetPos().y + entityMap->entities[i]->GetSize().y >= camera->GetPos().y && entityMap->entities[i]->GetPos().y <= camera->GetPos().y + SCRHEIGHT) {
+				if (player->AABBCollision(entityMap->entities[i])) {
+					entityMap->entities[i]->Update(dt);
+				}
+			}
 		}
+		
 	}
 }
 
 void Game::CollisionEntities() {
-	for (GameObject* entity : entities) {
-		if (entity->GetPos().x + entity->GetSize().x >= camera->GetPos().x && entity->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
-			entity->GetPos().y + entity->GetSize().y >= camera->GetPos().y && entity->GetPos().y <= camera->GetPos().y + SCRHEIGHT) {
-			if (player->AABBCollision(entity)) {
-				entity->Collided(player);
+	for (uint i = 0; i < entityMap->entityCount; i++) {
+		if (entityMap->entities[i] != NULL) {
+			if (entityMap->entities[i]->GetPos().x + entityMap->entities[i]->GetSize().x >= camera->GetPos().x && entityMap->entities[i]->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
+				entityMap->entities[i]->GetPos().y + entityMap->entities[i]->GetSize().y >= camera->GetPos().y && entityMap->entities[i]->GetPos().y <= camera->GetPos().y + SCRHEIGHT) {
+				if (player->AABBCollision(entityMap->entities[i])) {
+					entityMap->entities[i]->Collided(player);
+				}
 			}
 		}
 	}
 }
 
 void Game::RenderEntities() {
-	for (GameObject* entity : entities) {
-		if (entity->GetPos().x + entity->GetSize().x >= camera->GetPos().x && entity->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
-			entity->GetPos().y + entity->GetSize().y >= camera->GetPos().y && entity->GetPos().y <= camera->GetPos().y + SCRHEIGHT) {
-			camera->RenderGameObject(entity, 0);
+	for (uint i = 0; i < entityMap->entityCount; i++) {
+		if (entityMap->entities[i] != NULL) {
+			if (entityMap->entities[i]->GetPos().x + entityMap->entities[i]->GetSize().x >= camera->GetPos().x && entityMap->entities[i]->GetPos().x <= camera->GetPos().x + SCRWIDTH &&
+				entityMap->entities[i]->GetPos().y + entityMap->entities[i]->GetSize().y >= camera->GetPos().y && entityMap->entities[i]->GetPos().y <= camera->GetPos().y + SCRHEIGHT) {
+				camera->RenderGameObject(entityMap->entities[i], 0);
+			}
 		}
 	}
 }

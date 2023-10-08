@@ -19,16 +19,14 @@ void Camera::SetTarget(GameObject* newTarget) {
 void Camera::Update(float dt) {
 	// calculate the next position of the camera
 	float speed = camSpeed * dt;
-	float destX = target->GetPos().x - position.x - SCRWIDTH / 2;
-	float destY = target->GetPos().y - position.y - SCRHEIGHT / 2;
+	float2 destX = float2(target->GetPos().x - position.x - SCRWIDTH / 2, target->GetPos().y - position.y - SCRHEIGHT / 2);
 
 	// clamp the camera movement
-	position.x += clamp(destX, -speed, speed);
-	position.y += clamp(destY, -speed, speed);
+	position += clamp(destX, -speed, speed);
 
 	// clamp the camera to not make it move outside of the world
-	position.x = clamp(position.x, 0.0f, static_cast<float>(worldWidth) - SCRWIDTH);
-	position.y = clamp(position.y, 0.0f, static_cast<float>(worldHeight) - SCRHEIGHT);
+	position = float2(clamp(position.x, 0.0f, static_cast<float>(worldWidth) - SCRWIDTH), 
+					  clamp(position.y, 0.0f, static_cast<float>(worldHeight) - SCRHEIGHT));
 
 	// clamp the target position to be inside the world
 	target->SetPos(clamp(target->GetPos().x, 0.0f, static_cast<float>(worldWidth) - target->GetSize().x),

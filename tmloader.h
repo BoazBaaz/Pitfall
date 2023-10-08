@@ -1,63 +1,88 @@
 #pragma once
 
 namespace Tmpl8 {
+	class GameObject;
+	class TMLoader {
+	public:
+		// constructor / destructor
+		TMLoader(const char* file, uint columns, uint rows, uint2 tileSize);
+		~TMLoader() { delete map; }
+
+		// attributes
+		uint columns, rows;
+		uint2 tileSize = 32;
+		uint mapSize;
+
+	protected:
+		// special opperations
+		void ParseCSV();
+
+		// attributes
+		int* map;
+		const char* file;
+	};
+
+
+
 	class Tileset {
 	public:
 		// constructor / destructor
-		Tileset(const char* filename, uint columns, uint rows, uint2 tileSize = 32);
+		Tileset(const char* filename, uint columns, uint rows, uint2 tileSize);
 		~Tileset();
 
 		// special opperations
 		void InitializeTileset(const char* filename);
 
 		// member data access
-		Surface* GetSurface(int index) { return tiles[index]; }
-		Surface* GetSurface(int x, int y) { return tiles[x + y * columns]; }
+		Surface* GetTile(int index) { return tileset[index]; }
+		Surface* GetTile(int x, int y) { return tileset[x + y * columns]; }
 
 		// attributes
-		uint columns, rows; // the number of rows and columns of the tileset
-		uint numTiles; // the number of total tiles
-		uint2 tileSize; // the size of a tile in pixels
+		uint columns, rows;
+		uint2 tileSize = 32;
+		uint mapSize;
 
 	private:
 		// attributes
-		Surface** tiles;
+		Surface** tileset;
 	};
 
-
-	class Tilemap {
+	class Tilemap : public TMLoader {
 	public:
-		enum TileStates { none = 0, collision, ladder, death };
+		enum TileStates { none = 0, collision, ladder, water, death };
 	private:
 		struct Tile {
+			// constructor / destructor
 			Tile() = default;
 			Tile(int tileID) : tileID(tileID) {
 				switch (tileID) {
-					case -1:
-					case 8:	/*Cobweb1*/
-					case 9:	/*Cobweb2*/
-					case 10: /*Cobweb3*/
-					case 11: /*Cobweb4*/
-					case 12: /*Cage Top*/
-					case 21: /*Sign Left*/
-					case 25: /*Cage Bottom*/
-					case 34: /*Sign Right*/
-					case 35: /*Chain1*/
-					case 36: /*Chain2*/
-					case 37: /*Chain3*/
-					case 38: /*Chain Top*/
-					case 46: /*Fase Grey*/
-					case 47: /*Barrel*/
-					case 49: /*Door Top Open*/
-					case 50: /*Chain Half*/
-					case 51: /*Chain Bottom*/
-					case 59: /*Fase Brown*/
-					case 62: /*Door Bottom Open*/
-						tileState = TileStates::none;
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 13:
+					case 14:
+					case 15:
+					case 16:
+					case 17:
+					case 26:
+					case 27:
+					case 28:
+					case 41:
+					case 42:
+					case 43:
+					case 56:
+					case 57:
+					case 58:
+					case 71:
+					case 72:
+					case 73:
+						tileState = TileStates::collision;
 						break;
-					case 7: /*Ladder Top*/
-					case 20: /*Ladder Middle*/
-					case 33: /*Ladder Bottom*/
+					case 7:
+					case 20:
+					case 33:
 						tileState = TileStates::ladder;
 						break;
 					case 63:
@@ -69,35 +94,44 @@ namespace Tmpl8 {
 						tileState = TileStates::death;
 						break;
 					default:
-						tileState = TileStates::collision;
+						tileState = TileStates::none;
 						break;
 				}
 			}
+
+			// attributes
 			int tileID = -1;
 			TileStates tileState = TileStates::none;
 		};
 	public:
-
 		// constructor / destructor
 		Tilemap(const char* filename, Tileset* tileset, uint columns, uint rows);
 		~Tilemap();
 
 		// member data access
-		Tile GetTile(int index) { return map[index]; }
-		Tile GetTile(int x, int y) { return map[x + y * columns]; }
+		Tile GetTile(int index) { return tilemap[index]; }
+		Tile GetTile(int x, int y) { return tilemap[x + y * columns]; }
 		Surface* GetSurface() { return surface; }
 
 		// special opperations
-		void InitializeTilemap(const char* filename, Tileset* tileset);
-
-		// attributes
-		uint columns, rows; // the number of rows and columns of the tilemap
-		uint mapSize; // the size of the tilemap
-		uint2 tileSize; // the size of a tile in pixels
+		void InitializeTilemap(Tileset* tileset);
 
 	private:
 		// attributes
-		Tile* map;
+		Tile* tilemap;
 		Surface* surface;
+	};
+
+	class EntityMap : TMLoader {
+	public:
+		// constructor / destructor
+		EntityMap(const char* filename, Tileset* tileset, uint columns, uint rows, GameObject* target, Tilemap* tilemap);
+
+		// special opperations
+		void InitializeEntities(Tileset* tileset, GameObject* target, Tilemap* tilemap);
+
+		// attributes
+		uint entityCount = 0;
+		GameObject** entities;
 	};
 }

@@ -10,6 +10,10 @@
 #define SCRHEIGHT	1080
 // #define FULLSCREEN
 
+// physics
+#define GRAVITY			9.81f
+#define DECELERATION	0.995f
+
 // constants
 #define PI			3.14159265358979323846264f
 #define INVPI		0.31830988618379067153777f
