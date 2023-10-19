@@ -5,13 +5,13 @@
 #pragma once
 
 namespace Tmpl8 {
-	class Tileset; 
-	class Tilemap; 
+	class Camera;
+	class Tileset;
+	class Tilemap;
 	class EntityMap;
 	class GameObject;
 	class Player;
-	class Enemy;
-	class Camera;
+	class Rope;
 	class Game : public TheApp {
 	public:
 		// game flow methods
@@ -22,13 +22,16 @@ namespace Tmpl8 {
 	private:
 		// special opperations
 		void UpdateEntities(float dt);
-		void CollisionEntities();
 		void RenderEntities();
 
 		int score = 0;
 		Camera* camera;
-		Tilemap* tilemap;
+		Tileset* mainTileset;
+		Tilemap* mainTilemap;
+		Tileset* entityTileset;
+		Tilemap* entityTilemap;
 		EntityMap* entityMap;
 		Player* player;
+		Rope* rope;
 	};
 }

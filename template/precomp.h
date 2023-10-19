@@ -58,7 +58,7 @@ using namespace std;
 #include "surface.h"
 #include "sprite.h"
 
-// my own headers
+// template headers
 #include "input.h"
 
 // namespaces
@@ -137,28 +137,32 @@ using namespace Tmpl8;
 #define FATALERROR_IN_CALL( stmt, error_parser, fmt, ... ) do { auto ret = ( stmt ); if ( ret ) FATALERROR_IN( #stmt, error_parser( ret ), fmt, ##__VA_ARGS__ ) } while ( 0 )
 
 // timer
-struct Timer {
+struct Timer
+{
 	Timer() { reset(); }
-	float elapsed() const {
+	float elapsed() const
+	{
 		chrono::high_resolution_clock::time_point t2 = chrono::high_resolution_clock::now();
 		chrono::duration<double> time_span = chrono::duration_cast<chrono::duration<double>>(t2 - start);
-		return (float) time_span.count();
+		return (float)time_span.count();
 	}
 	void reset() { start = chrono::high_resolution_clock::now(); }
 	chrono::high_resolution_clock::time_point start;
 };
 
 // Nils's jobmanager
-class Job {
+class Job
+{
 public:
 	virtual void Main() = 0;
 protected:
 	friend class JobThread;
 	void RunCodeWrapper();
 };
-class JobThread {
+class JobThread
+{
 public:
-	void CreateAndStartThread(unsigned int threadId);
+	void CreateAndStartThread( unsigned int threadId );
 	void Go();
 	void BackgroundTask();
 	HANDLE m_GoSignal, m_ThreadHandle;
@@ -167,16 +171,16 @@ public:
 class JobManager	// singleton class!
 {
 protected:
-	JobManager(unsigned int numThreads);
+	JobManager( unsigned int numThreads );
 public:
 	~JobManager();
-	static void CreateJobManager(unsigned int numThreads);
+	static void CreateJobManager( unsigned int numThreads );
 	static JobManager* GetJobManager();
-	static void GetProcessorCount(uint& cores, uint& logical);
-	void AddJob2(Job* a_Job);
+	static void GetProcessorCount( uint& cores, uint& logical );
+	void AddJob2( Job* a_Job );
 	unsigned int GetNumThreads() { return m_NumThreads; }
 	void RunJobs();
-	void ThreadDone(unsigned int n);
+	void ThreadDone( unsigned int n );
 	int MaxConcurrent() { return m_NumThreads; }
 protected:
 	friend class JobThread;
@@ -190,13 +194,13 @@ protected:
 };
 
 // forward declaration of helper functions
-void FatalError(const char* fmt, ...);
-bool FileIsNewer(const char* file1, const char* file2);
-bool FileExists(const char* f);
-bool RemoveFile(const char* f);
-string TextFileRead(const char* _File);
-int LineCount(const string s);
-void TextFileWrite(const string& text, const char* _File);
+void FatalError( const char* fmt, ... );
+bool FileIsNewer( const char* file1, const char* file2 );
+bool FileExists( const char* f );
+bool RemoveFile( const char* f );
+string TextFileRead( const char* _File );
+int LineCount( const string s );
+void TextFileWrite( const string& text, const char* _File );
 
 // global project settigs; shared with OpenCL.
 // If you change these a lot, consider moving the include out of precomp.h.
@@ -207,7 +211,7 @@ void TextFileWrite(const string& text, const char* _File);
 #define cpuid(info, x) __cpuidex(info, x, 0)
 #else
 #include <cpuid.h>
-void cpuid(int info[4], int InfoType) { __cpuid_count(InfoType, 0, info[0], info[1], info[2], info[3]); }
+void cpuid( int info[4], int InfoType ) { __cpuid_count( InfoType, 0, info[0], info[1], info[2], info[3] ); }
 #endif
 class CPUCaps // from https://github.com/Mysticial/FeatureDetector
 {
@@ -232,63 +236,69 @@ public:
 	static inline bool HW_AVX512IFMA = false; //  AVX512 Integer 52-bit Fused Multiply-Add
 	static inline bool HW_AVX512VBMI = false; //  AVX512 Vector Byte Manipulation Instructions
 	// constructor
-	CPUCaps() {
+	CPUCaps()
+	{
 		int info[4];
-		cpuid(info, 0);
+		cpuid( info, 0 );
 		int nIds = info[0];
-		cpuid(info, 0x80000000);
+		cpuid( info, 0x80000000 );
 		unsigned nExIds = info[0];
 		// detect cpu features
-		if (nIds >= 0x00000001) {
-			cpuid(info, 0x00000001);
-			HW_MMX = (info[3] & ((int) 1 << 23)) != 0;
-			HW_SSE = (info[3] & ((int) 1 << 25)) != 0;
-			HW_SSE2 = (info[3] & ((int) 1 << 26)) != 0;
-			HW_SSE3 = (info[2] & ((int) 1 << 0)) != 0;
-			HW_SSSE3 = (info[2] & ((int) 1 << 9)) != 0;
-			HW_SSE41 = (info[2] & ((int) 1 << 19)) != 0;
-			HW_SSE42 = (info[2] & ((int) 1 << 20)) != 0;
-			HW_AES = (info[2] & ((int) 1 << 25)) != 0;
-			HW_AVX = (info[2] & ((int) 1 << 28)) != 0;
-			HW_FMA3 = (info[2] & ((int) 1 << 12)) != 0;
-			HW_RDRAND = (info[2] & ((int) 1 << 30)) != 0;
+		if (nIds >= 0x00000001)
+		{
+			cpuid( info, 0x00000001 );
+			HW_MMX = (info[3] & ((int)1 << 23)) != 0;
+			HW_SSE = (info[3] & ((int)1 << 25)) != 0;
+			HW_SSE2 = (info[3] & ((int)1 << 26)) != 0;
+			HW_SSE3 = (info[2] & ((int)1 << 0)) != 0;
+			HW_SSSE3 = (info[2] & ((int)1 << 9)) != 0;
+			HW_SSE41 = (info[2] & ((int)1 << 19)) != 0;
+			HW_SSE42 = (info[2] & ((int)1 << 20)) != 0;
+			HW_AES = (info[2] & ((int)1 << 25)) != 0;
+			HW_AVX = (info[2] & ((int)1 << 28)) != 0;
+			HW_FMA3 = (info[2] & ((int)1 << 12)) != 0;
+			HW_RDRAND = (info[2] & ((int)1 << 30)) != 0;
 		}
-		if (nIds >= 0x00000007) {
-			cpuid(info, 0x00000007);
-			HW_AVX2 = (info[1] & ((int) 1 << 5)) != 0;
-			HW_BMI1 = (info[1] & ((int) 1 << 3)) != 0;
-			HW_BMI2 = (info[1] & ((int) 1 << 8)) != 0;
-			HW_ADX = (info[1] & ((int) 1 << 19)) != 0;
-			HW_SHA = (info[1] & ((int) 1 << 29)) != 0;
-			HW_PREFETCHWT1 = (info[2] & ((int) 1 << 0)) != 0;
-			HW_AVX512F = (info[1] & ((int) 1 << 16)) != 0;
-			HW_AVX512CD = (info[1] & ((int) 1 << 28)) != 0;
-			HW_AVX512PF = (info[1] & ((int) 1 << 26)) != 0;
-			HW_AVX512ER = (info[1] & ((int) 1 << 27)) != 0;
-			HW_AVX512VL = (info[1] & ((int) 1 << 31)) != 0;
-			HW_AVX512BW = (info[1] & ((int) 1 << 30)) != 0;
-			HW_AVX512DQ = (info[1] & ((int) 1 << 17)) != 0;
-			HW_AVX512IFMA = (info[1] & ((int) 1 << 21)) != 0;
-			HW_AVX512VBMI = (info[2] & ((int) 1 << 1)) != 0;
+		if (nIds >= 0x00000007)
+		{
+			cpuid( info, 0x00000007 );
+			HW_AVX2 = (info[1] & ((int)1 << 5)) != 0;
+			HW_BMI1 = (info[1] & ((int)1 << 3)) != 0;
+			HW_BMI2 = (info[1] & ((int)1 << 8)) != 0;
+			HW_ADX = (info[1] & ((int)1 << 19)) != 0;
+			HW_SHA = (info[1] & ((int)1 << 29)) != 0;
+			HW_PREFETCHWT1 = (info[2] & ((int)1 << 0)) != 0;
+			HW_AVX512F = (info[1] & ((int)1 << 16)) != 0;
+			HW_AVX512CD = (info[1] & ((int)1 << 28)) != 0;
+			HW_AVX512PF = (info[1] & ((int)1 << 26)) != 0;
+			HW_AVX512ER = (info[1] & ((int)1 << 27)) != 0;
+			HW_AVX512VL = (info[1] & ((int)1 << 31)) != 0;
+			HW_AVX512BW = (info[1] & ((int)1 << 30)) != 0;
+			HW_AVX512DQ = (info[1] & ((int)1 << 17)) != 0;
+			HW_AVX512IFMA = (info[1] & ((int)1 << 21)) != 0;
+			HW_AVX512VBMI = (info[2] & ((int)1 << 1)) != 0;
 		}
-		if (nExIds >= 0x80000001) {
-			cpuid(info, 0x80000001);
-			HW_x64 = (info[3] & ((int) 1 << 29)) != 0;
-			HW_ABM = (info[2] & ((int) 1 << 5)) != 0;
-			HW_SSE4a = (info[2] & ((int) 1 << 6)) != 0;
-			HW_FMA4 = (info[2] & ((int) 1 << 16)) != 0;
-			HW_XOP = (info[2] & ((int) 1 << 11)) != 0;
+		if (nExIds >= 0x80000001)
+		{
+			cpuid( info, 0x80000001 );
+			HW_x64 = (info[3] & ((int)1 << 29)) != 0;
+			HW_ABM = (info[2] & ((int)1 << 5)) != 0;
+			HW_SSE4a = (info[2] & ((int)1 << 6)) != 0;
+			HW_FMA4 = (info[2] & ((int)1 << 16)) != 0;
+			HW_XOP = (info[2] & ((int)1 << 11)) != 0;
 		}
 	}
 };
 
 // application base class
-class TheApp {
+class TheApp
+{
 public:
 	virtual void Init() = 0;
-	virtual void Tick(float deltaTime) = 0;
+	virtual void Tick( float deltaTime ) = 0;
 	virtual void Shutdown() = 0;
 	Surface* screen = 0;
 	Input* input = 0;
 };
+
 // EOF

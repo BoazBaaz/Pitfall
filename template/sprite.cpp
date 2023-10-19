@@ -74,10 +74,11 @@ void Sprite::InitializeStartData() {
 		for (int y = 0; y < height; ++y) {
 			start[f][y] = width;
 			uint* addr = GetBuffer() + f * width + y * width * numFrames;
-			for (int x = 0; x < width; ++x) if (addr[x]) {
-				start[f][y] = x;
-				break;
-			}
+			for (int x = 0; x < width; ++x)
+				if (addr[x]) {
+					start[f][y] = x;
+					break;
+				}
 		}
 	}
 }

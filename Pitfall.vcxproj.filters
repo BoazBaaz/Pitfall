@@ -5,9 +5,6 @@
       <Filter>template</Filter>
     </ClCompile>
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="input.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="tmloader.cpp" />
     <ClCompile Include="template\opencl.cpp">
       <Filter>template</Filter>
     </ClCompile>
@@ -23,9 +20,25 @@
     <ClCompile Include="template\tmpl8math.cpp">
       <Filter>template</Filter>
     </ClCompile>
-    <ClCompile Include="gameobject.cpp" />
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="classes\camera.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\enemy.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\gameobject.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\player.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\rope.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="classes\tmloader.cpp">
+      <Filter>classes</Filter>
+    </ClCompile>
+    <ClCompile Include="input.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="template\common.h">
@@ -35,9 +48,6 @@
       <Filter>template</Filter>
     </ClInclude>
     <ClInclude Include="game.h" />
-    <ClInclude Include="input.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="tmloader.h" />
     <ClInclude Include="cl\tools.cl">
       <Filter>template\cl</Filter>
     </ClInclude>
@@ -56,9 +66,25 @@
     <ClInclude Include="template\tmpl8math.h">
       <Filter>template</Filter>
     </ClInclude>
-    <ClInclude Include="gameobject.h" />
-    <ClInclude Include="camera.h" />
-    <ClInclude Include="enemy.h" />
+    <ClInclude Include="classes\tmloader.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\camera.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\enemy.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\gameobject.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\player.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="classes\rope.h">
+      <Filter>classes</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="template\LICENSE">
@@ -77,6 +103,9 @@
     </Filter>
     <Filter Include="template\cl">
       <UniqueIdentifier>{dc41819e-b6c1-4070-b4c1-0849e444ca7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="classes">
+      <UniqueIdentifier>{7c9de6ec-e395-446c-8e9f-cb184d4f0fa1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Tmpl8::Camera" Collapsed="true">
+    <Position X="23.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASCgAAAACAAAAAAIAAAACQAIAAAAAAAAAAAAAEAAAI=</HashCode>
+      <FileName>classes\camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Tilemap">
+    <Position X="1" Y="19.75" Width="4.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAACAAAAAAAAAAAAAIAAAEAAAAAA=</HashCode>
+      <FileName>classes\tmloader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Enemy">
+    <Position X="10.75" Y="9" Width="3.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Tmpl8::Enemy::EnemyType">
+        <TypeIdentifier>
+          <NewMemberFileName>classes\enemy.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>classes\enemy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::FollowEnemy">
+    <Position X="12.25" Y="13.25" Width="6" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAIAAAAAAAgAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>classes\enemy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::PathEnemy">
+    <Position X="6.75" Y="13.25" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAIAAAAAAAAAAAAAAAAAAAAABAAIAAAAAAAAAAA=</HashCode>
+      <FileName>classes\enemy.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Entity">
+    <Position X="11.75" Y="0.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>EAQAAAAAACAAAACAAIAAIBAAAAAAAgAAABAIAIAAAAA=</HashCode>
+      <FileName>classes\gameobject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::GameObject">
+    <Position X="13" Y="4.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>ABQAAAAEAAAAEAAAAAAAAAAAABACAUAAABQAAAIAAAA=</HashCode>
+      <FileName>classes\gameobject.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Player">
+    <Position X="19" Y="9" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAoAQAAAIAAAAAAAAAABgAACABAQAAAAAQAAABg=</HashCode>
+      <FileName>classes\player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Rope">
+    <Position X="1.5" Y="4.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAUEAAAAQAAAAAAACAAAQAAAAAAAA=</HashCode>
+      <FileName>classes\rope.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::TMLoader">
+    <Position X="4.75" Y="16.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAFAAAAAAAAAAAAABAAAAAAAACAAAADAAAAAAAAAE=</HashCode>
+      <FileName>classes\tmloader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Tileset" Collapsed="true">
+    <Position X="26.25" Y="1.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQAAAABAAQAEAAAAAABAAAAAAAAiAAAAKAAAAAAAAAA=</HashCode>
+      <FileName>classes\tmloader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Input" Collapsed="true">
+    <Position X="28" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABVAAJAAgAFAAAQAABAEQAMAAoCAAAAIAAAACQFAA=</HashCode>
+      <FileName>input.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::Game" Collapsed="true">
+    <Position X="26.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAQAAIARAAgAAAAAABIQACAAAEQAA=</HashCode>
+      <FileName>game.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Tmpl8::EntityMap">
+    <Position X="6.25" Y="19.75" Width="5.75" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAABQAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>classes\tmloader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

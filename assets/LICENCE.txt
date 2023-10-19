@@ -1,0 +1,12 @@
+dungeon_tileset.png
+> This tileset is made by David G (Incolgames on twitter) and was edited by me.
+> Source: https://incolgames.itch.io/dungeon-platformer-tile-set-pixel-art
+Tileset that I made for practice. Feedback is highly appreciated
+
+entities\slime_sheet.png
+> This spritesheet was made by rvros and was edited by me.
+> Source: https://rvros.itch.io/pixel-art-animated-slime
+
+entities\bat_sheet.png
+> This spritesheet is part of a pack made by Admurin and was edited by me.
+> Source: https://admurin.itch.io/enemy-galore-1

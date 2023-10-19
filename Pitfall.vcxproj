@@ -121,13 +121,14 @@
   </ItemDefinitionGroup>
   <!-- END Custom section -->
   <ItemGroup>
-    <ClCompile Include="camera.cpp" />
-    <ClCompile Include="enemy.cpp" />
+    <ClCompile Include="classes\camera.cpp" />
+    <ClCompile Include="classes\enemy.cpp" />
+    <ClCompile Include="classes\gameobject.cpp" />
+    <ClCompile Include="classes\player.cpp" />
+    <ClCompile Include="classes\rope.cpp" />
+    <ClCompile Include="classes\tmloader.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="gameobject.cpp" />
     <ClCompile Include="input.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="tmloader.cpp" />
     <ClCompile Include="template\opencl.cpp" />
     <ClCompile Include="template\opengl.cpp" />
     <ClCompile Include="template\sprite.cpp" />
@@ -141,14 +142,15 @@
     <ClCompile Include="template\tmpl8math.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.h" />
+    <ClInclude Include="classes\camera.h" />
+    <ClInclude Include="classes\enemy.h" />
+    <ClInclude Include="classes\gameobject.h" />
+    <ClInclude Include="classes\player.h" />
+    <ClInclude Include="classes\rope.h" />
+    <ClInclude Include="classes\tmloader.h" />
     <ClInclude Include="cl\tools.cl" />
-    <ClInclude Include="enemy.h" />
     <ClInclude Include="game.h" />
-    <ClInclude Include="gameobject.h" />
     <ClInclude Include="input.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="tmloader.h" />
     <ClInclude Include="template\common.h" />
     <ClInclude Include="template\opencl.h" />
     <ClInclude Include="template\opengl.h" />
