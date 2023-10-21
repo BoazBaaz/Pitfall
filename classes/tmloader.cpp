@@ -11,7 +11,7 @@ Tileset::Tileset(const char* filename, uint columns, uint rows, uint2 tileSize =
 	rows(rows),
 	tileSize(tileSize),
 	mapSize(columns* rows),
-	tiles(new Tile* [columns * rows]) {
+	tiles(new Tile* [columns * rows] {nullptr}) {
 	InitializeTileset(filename);
 }
 

@@ -4,6 +4,8 @@
 
 Rope::Rope(Surface* screen, float2 position, int width, int length, uint color) :
 	Entity(position, uint2(width, length)),
+	width(width),
+	length(length),
 	color(color),
 	screen(screen) {
 }
